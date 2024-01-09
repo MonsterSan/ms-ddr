@@ -11,12 +11,12 @@ import math
 
 from lib.datasets.dataset_crack import CrackDataset
 from torch.utils.data import DataLoader
-from torch.optim.lr_scheduler import PolynomialLR
 
 from lib.models.ddrnet import ddrnet_23, ddrnet_silm
 from lib.models.bisenetv1 import BiSeNetV1
 from lib.models.bisenetv2 import BiSeNetV2
 
+from torch.optim.lr_scheduler import PolynomialLR
 from torch.nn.modules.loss import CrossEntropyLoss
 from lib.losses.ohem_cross_entropy_loss import OhemCrossEntropyLoss
 
@@ -47,7 +47,7 @@ parser.add_argument('--seed', type=int,
                     default=3407, help='random seed')
 parser.add_argument('--log_path', type=str,
                     default='./run', help='run path')
-parser.add_argument('--log-iters', type=int,
+parser.add_argument('--log_iters', type=int,
                     default=500, help='log interval')
 parser.add_argument('--eval', type=bool,
                     default=True, help='eval when train')
