@@ -23,11 +23,16 @@ from lib.losses.ohem_cross_entropy_loss import OhemCrossEntropyLoss
 from lib.utils.loss_avg_meter import LossAverageMeter
 from lib.utils.confusion_matrix import ConfusionMatrix
 
+from utils.save_log import save_log
+from utils.save_weight import save_weights
+
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str,
                     default='ddrnet', help='model name')
+# D:\\data\\Crack_Forest_paddle\\Crack_Forest_paddle
+# /home/user/data/lumianliefeng/Crack_Forest_paddle
 parser.add_argument('--dataset_root', type=str,
-                    default='/home/user/data/lumianliefeng/Crack_Forest_paddle', help='dataset root directory')
+                    default='D:\\data\\Crack_Forest_paddle\\Crack_Forest_paddle', help='dataset root directory')
 parser.add_argument('--img_size', type=int,
                     default=512, help='input patch size of network input')
 parser.add_argument('--num_classes', type=int,
@@ -42,6 +47,10 @@ parser.add_argument('--seed', type=int,
                     default=3407, help='random seed')
 parser.add_argument('--log_path', type=str,
                     default='./run', help='run path')
+parser.add_argument('--log-iters', type=int,
+                    default=500, help='log interval')
+parser.add_argument('--eval', type=bool,
+                    default=True, help='eval when train')
 args = parser.parse_args()
 
 
@@ -87,17 +96,21 @@ if __name__ == "__main__":
 
     # create optimizer
     optimizer = torch.optim.SGD(model.parameters(), lr=args.base_lr, momentum=0.9, weight_decay=0.0001)
-    lr = PolynomialLR(optimizer=optimizer, total_iters=args.max_epochs * data_length, power=0.9)
+    lr = PolynomialLR(optimizer=optimizer, total_iters=max_iterations, power=0.9)
 
     # config log
     now_time = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
     args.log_path = os.path.join(args.log_path, args.model + '_' + now_time)
+    weight_path = os.path.join(args.log_path, "weights")
     if not os.path.exists(args.log_path):
         os.makedirs(args.log_path)
+    if not os.path.exists(weight_path):
+        os.makedirs(weight_path)
     logging.basicConfig(filename=args.log_path + "/log.txt", level=logging.INFO,
                         format='[%(asctime)s.%(msecs)03d] %(message)s', datefmt='%H:%M:%S')
     logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
-    logging.info("model {}".format(args.model))
+    logging.info(str(args))
+    # logging.info("model {}".format(args.model))
     logging.info("train img nums {}".format(data_length))
     logging.info("{} iterations per epoch. {} max iterations "
                  .format(data_length // args.batch_size, data_length // args.batch_size * args.max_epochs))
@@ -124,7 +137,7 @@ if __name__ == "__main__":
                 outputs = [outputs]
             train_confmat.update(label_batch.flatten(), outputs[0].argmax(1).flatten())
             loss_list = [loss_weights[i] * losses[i](outputs[i], label_batch.long()) for i in range(len(outputs))]
-            #print(loss_list)
+            # print(loss_list)
             main_loss = loss_list[0]
             loss = main_loss.clone()
             for i in range(1, len(loss_list)):
@@ -142,82 +155,63 @@ if __name__ == "__main__":
             remaining_time = elapsed_time * (1 / progress - 1)
             remaining_time_minutes = math.floor(remaining_time / 60)
             remaining_time_seconds = math.floor(remaining_time - remaining_time_minutes * 60)
+            current_lr = optimizer.param_groups[0]['lr']
 
-            if iter_num % 500 == 0:
-                logging.info('[train]iteration %d / %d\tloss: %f\tmain_loss:%f\tremaining time : %d minutes  %d seconds'
-                             % (iter_num, max_iterations, loss.item(), main_loss.item(), remaining_time_minutes,
-                                remaining_time_seconds))
+            if iter_num % args.log_iters == 0:
+                logging.info(
+                    '[train]iteration %d / %d\tloss: %f\tmain_loss:%f\tcurrent lr:%f\tremaining time : %d minutes  %d seconds'
+                    % (iter_num, max_iterations, loss.item(), main_loss.item(), current_lr, remaining_time_minutes,
+                       remaining_time_seconds))
 
-        trainacc_global, trainacc, trainiu, trainRec, trainPre, trainF1 = train_confmat.compute()
-        trainacc_global = trainacc_global.item() * 100
-        trainaver_row_correct = ['{:.1f}'.format(i) for i in (trainacc * 100).tolist()]
-        trainiou = ['{:.1f}'.format(i) for i in (trainiu * 100).tolist()]
-        trainmiou = trainiu.mean().item() * 100
-        trainF1 = trainF1.item() * 100,
-        trainRec = trainRec.item() * 100,
-        trainPre = trainPre.item() * 100
-        with open(trainlog_path, "a") as lpath:
-            lpath.write(str(epoch) + "\t" + str(train_losses.avg) + "\t" + str(trainmiou) + "\t" + str(
-                trainacc_global) + "\t" + str(trainaver_row_correct[0]) + "-" + str(
-                trainaver_row_correct[1]) + "\t" + str(trainiou[0]) + "-" + str(trainiou[1]) + "\t" + str(
-                trainF1) + "\t" + str(trainRec) + "\t" + str(trainPre) + "\n")
-        if epoch >= 10:
-            torch.save(model.state_dict(), os.path.join(args.log_path, 'latest.pth'))
+        trainmiou = save_log(train_confmat, train_losses, trainlog_path, epoch)
+        if epoch >= 1:
+            torch.save(model.state_dict(), os.path.join(weight_path, 'latest.pth'))
 
-        logging.info("evaluating")
-        model.eval()
-        val_losses = LossAverageMeter()
-        val_confmat = ConfusionMatrix(args.num_classes)
-        with torch.no_grad():
-            sum_main_loss = 0
-            sum_loss = 0
-            num = 0
-            for batch_idx, sampled_batch in enumerate(val_dataloader):
-                image_batch, label_batch = sampled_batch['image'], sampled_batch['label']
-                image_batch, label_batch = image_batch.cuda(), label_batch.cuda()
-                outputs = model(image_batch)
-                if not isinstance(outputs, tuple):
-                    outputs = [outputs]
+        if args.eval:
+            logging.info("evaluating")
+            model.eval()
+            val_losses = LossAverageMeter()
+            val_confmat = ConfusionMatrix(args.num_classes)
+            with torch.no_grad():
+                sum_main_loss = 0
+                sum_loss = 0
+                num = 0
+                for batch_idx, sampled_batch in enumerate(val_dataloader):
+                    image_batch, label_batch = sampled_batch['image'], sampled_batch['label']
+                    image_batch, label_batch = image_batch.cuda(), label_batch.cuda()
+                    outputs = model(image_batch)
+                    if not isinstance(outputs, tuple):
+                        outputs = [outputs]
 
-                val_confmat.update(label_batch.flatten(), outputs[0].argmax(1).flatten())
-                loss_list = [loss_weights[i] * losses[i](outputs[i], label_batch.long()) for i in range(len(outputs))]
-                main_loss = loss_list[0]
-                loss = main_loss
-                for i in range(1, len(loss_list)):
-                    loss += loss_list[i]
-                val_losses.update(main_loss.item(), image_batch.shape[0])
-                sum_main_loss += main_loss.item()
-                sum_loss += loss.item()
-                num += 1
+                    val_confmat.update(label_batch.flatten(), outputs[0].argmax(1).flatten())
+                    loss_list = [loss_weights[i] * losses[i](outputs[i], label_batch.long()) for i in
+                                 range(len(outputs))]
+                    main_loss = loss_list[0]
+                    loss = main_loss
+                    for i in range(1, len(loss_list)):
+                        loss += loss_list[i]
+                    val_losses.update(main_loss.item(), image_batch.shape[0])
+                    sum_main_loss += main_loss.item()
+                    sum_loss += loss.item()
+                    num += 1
 
-            current_time = time.time()
-            elapsed_time = current_time - start_time
-            progress = iter_num / max_iterations
-            remaining_time = elapsed_time * (1 / progress - 1)
-            remaining_time_minutes = math.floor(remaining_time / 60)
-            remaining_time_seconds = math.floor(remaining_time - remaining_time_minutes * 60)
-            logging.info('[ val ]iteration %d\tmain_loss : %f, loss: %f\tremaining time : %d minutes  %d seconds'
-                         % (
-                         iter_num, sum_main_loss / num, sum_loss / num, remaining_time_minutes, remaining_time_seconds))
-        valacc_global, valacc, valiu, valRec, valPre, valF1 = val_confmat.compute()
-        valacc_global = valacc_global.item() * 100
-        valaver_row_correct = ['{:.1f}'.format(i) for i in (valacc * 100).tolist()]
-        valiou = ['{:.1f}'.format(i) for i in (valiu * 100).tolist()]
-        valmiou = valiu.mean().item() * 100
-        valF1 = valF1.item() * 100,
-        valRec = valRec.item() * 100,
-        valPre = valPre.item() * 100
-        with open(vallog_path, "a") as lpath:
-            lpath.write(
-                str(epoch) + "\t" + str(val_losses.avg) + "\t" + str(valmiou) + "\t" + str(valacc_global) + "\t" + str(
-                    valaver_row_correct[0]) + "-" + str(valaver_row_correct[1]) + "\t" + str(valiou[0]) + "-" + str(
-                    valiou[1]) + "\t" + str(valF1) + "\t" + str(valRec) + "\t" + str(valPre) + "\n")
+                current_time = time.time()
+                elapsed_time = current_time - start_time
+                progress = iter_num / max_iterations
+                remaining_time = elapsed_time * (1 / progress - 1)
+                remaining_time_minutes = math.floor(remaining_time / 60)
+                remaining_time_seconds = math.floor(remaining_time - remaining_time_minutes * 60)
+                logging.info('[ val ]iteration %d\tmain_loss : %f, loss: %f\tremaining time : %d minutes  %d seconds'
+                             % (
+                                 iter_num, sum_main_loss / num, sum_loss / num, remaining_time_minutes,
+                                 remaining_time_seconds))
 
-        if val_losses.avg < min_loss:
-            min_loss = val_losses.avg
-            torch.save(model.state_dict(), os.path.join(args.log_path, 'lowest_loss.pth'))
-        if valmiou > best_miou:
-            best_miou = valmiou
-            torch.save(model.state_dict(), os.path.join(args.log_path, 'best_miou.pth'))
+            valmiou = save_log(val_confmat, val_losses, vallog_path, epoch)
+            min_loss, best_miou = save_weights(val_losses, valmiou, min_loss, best_miou, model.state_dict(),
+                                               weight_path)
+        else:
+            min_loss, best_miou = save_weights(train_losses, trainmiou, min_loss, best_miou, model.state_dict(),
+                                               weight_path)
     new_time_str = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
-    print("Training Finished at " + new_time_str)
+    logging.info("Training Started at " + now_time)
+    logging.info("Training Finished at " + new_time_str)
