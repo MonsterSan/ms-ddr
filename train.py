@@ -28,11 +28,11 @@ from utils.save_weight import save_weights
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str,
-                    default='ddrnet', help='model name')
+                    default='bisenetv2', help='model name')
 # D:\\data\\Crack_Forest_paddle\\Crack_Forest_paddle
 # /home/user/data/lumianliefeng/Crack_Forest_paddle
 parser.add_argument('--dataset_root', type=str,
-                    default='D:\\data\\Crack_Forest_paddle\\Crack_Forest_paddle', help='dataset root directory')
+                    default='/home/user/data/lumianliefeng/Crack_Forest_paddle', help='dataset root directory')
 parser.add_argument('--img_size', type=int,
                     default=512, help='input patch size of network input')
 parser.add_argument('--num_classes', type=int,

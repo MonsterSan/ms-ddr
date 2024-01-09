@@ -1,0 +1,13 @@
+[19:40:26.706] Namespace(model='ddrnet', log_path='./run/ddrnet_20240109_174157', checkpoint_type='best_miou', dataset_root='/home/user/data/lumianliefeng/Crack_Forest_paddle', img_size=512, num_classes=2, seed=3407)
+[19:40:26.706] val img nums 2072
+[19:40:43.114] 
+losses.avg:0.08985869047001839
+miou:79.68047857284546
+acc_global:98.5720157623291
+aver_row_correct:99.30-74.83
+iou:98.54-60.82
+f1:(75.63837170600891,)
+Rec:(74.83457326889038,)
+Rre:76.45962834358215
+
+[19:40:43.114] Val Finished

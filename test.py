@@ -20,15 +20,15 @@ from lib.utils.confusion_matrix import ConfusionMatrix
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str,
-                    default='ddrnet', help='model name')
+                    default='bisenetv2', help='model name')
 parser.add_argument('--log_path', type=str,
-                    default='./run/ddrnet_20240109_175932', help='log path')
+                    default='./run/bisenetv2_20240109_212253', help='log path')
 parser.add_argument('--checkpoint_type', type=str,
                     default='best_miou', help="best_miou or last or min_loss")
 # D:\\data\\Crack_Forest_paddle\\Crack_Forest_paddle
 # /home/user/data/lumianliefeng/Crack_Forest_paddle
 parser.add_argument('--dataset_root', type=str,
-                    default='D:\\data\\Crack_Forest_paddle\\Crack_Forest_paddle', help='dataset root directory')
+                    default='/home/user/data/lumianliefeng/Crack_Forest_paddle', help='dataset root directory')
 parser.add_argument('--img_size', type=int,
                     default=512, help='input patch size of network input')
 parser.add_argument('--num_classes', type=int,

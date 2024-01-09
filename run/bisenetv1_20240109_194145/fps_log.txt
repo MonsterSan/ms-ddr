@@ -1,0 +1,10 @@
+[21:33:04.297] Namespace(model='bisenetv1', log_path='./run/bisenetv1_20240109_194145', checkpoint_type='best_miou', img_size=512, num_classes=2)
+[21:33:40.035] fps: 280.634864601652
+[01:10:27.975] Namespace(model='bisenetv1', log_path='./run/bisenetv1_20240109_194145', checkpoint_type='best_miou', img_size=(512, 512), num_classes=2)
+[01:11:05.629] fps: 266.3970201010057
+[01:11:26.014] Namespace(model='bisenetv1', log_path='./run/bisenetv1_20240109_194145', checkpoint_type='best_miou', img_size=(2048, 1024), num_classes=2)
+[01:12:39.156] fps: 136.97077751185398
+[01:19:24.729] Namespace(model='bisenetv1', log_path='./run/bisenetv1_20240109_194145', checkpoint_type='best_miou', img_size=(2048, 1024), num_classes=2)
+[01:20:37.946] fps: 136.82883194319356
+[01:28:19.990] Namespace(model='bisenetv1', log_path='./run/bisenetv1_20240109_194145', checkpoint_type='best_miou', img_size=(512, 512), num_classes=2)
+[01:29:00.607] fps: 247.00824700994306
