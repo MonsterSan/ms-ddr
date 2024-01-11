@@ -123,10 +123,8 @@ class ContextPath(nn.Module):
     def __init__(self, *args, **kwargs):
         super(ContextPath, self).__init__()
         self.resnet = Resnet18()
-        #self.arm16 = AttentionRefinementModule(256, 128)
-        self.arm16 = ConvBNReLU(256,128,ks=3,stride=1, padding=1)
-        #self.arm32 = AttentionRefinementModule(512, 128)
-        self.arm32 = ConvBNReLU(512,128,ks=3,stride=1, padding=1)
+        self.arm16 = AttentionRefinementModule(256, 128)
+        self.arm32 = AttentionRefinementModule(512, 128)
         self.conv_head32 = ConvBNReLU(128, 128, ks=3, stride=1, padding=1)
         self.conv_head16 = ConvBNReLU(128, 128, ks=3, stride=1, padding=1)
         self.conv_avg = ConvBNReLU(512, 128, ks=1, stride=1, padding=0)
@@ -137,15 +135,11 @@ class ContextPath(nn.Module):
 
     def forward(self, x):
         feat8, feat16, feat32 = self.resnet(x)
-        #print("feat8: {}".format(feat8.shape))
-        #print("feat16: {}".format(feat16.shape))
-        #print("feat32: {}".format(feat32.shape))
 
         avg = torch.mean(feat32, dim=(2, 3), keepdim=True)
         avg = self.conv_avg(avg)
 
         feat32_arm = self.arm32(feat32)
-        #print("feat32_arm: {}".format(feat32_arm.shape))
         feat32_sum = feat32_arm + avg
         feat32_up = self.up32(feat32_sum)
         feat32_up = self.conv_head32(feat32_up)
@@ -239,16 +233,16 @@ class FeatureFusionModule(nn.Module):
     def forward(self, fsp, fcp):
         fcat = torch.cat([fsp, fcp], dim=1)
         feat = self.convblk(fcat)
-        atten = torch.mean(feat, dim=(2, 3), keepdim=True)
-        atten = self.conv(atten)
-        atten = self.bn(atten)
+        #atten = torch.mean(feat, dim=(2, 3), keepdim=True)
+        #atten = self.conv(atten)
+        #atten = self.bn(atten)
         #  atten = self.conv1(atten)
         #  atten = self.relu(atten)
         #  atten = self.conv2(atten)
-        atten = atten.sigmoid()
-        feat_atten = torch.mul(feat, atten)
-        feat_out = feat_atten + feat
-        return feat_out
+        #atten = atten.sigmoid()
+        #feat_atten = torch.mul(feat, atten)
+        #feat_out = feat_atten + feat
+        return feat
 
     def init_weight(self):
         for ly in self.children():
@@ -268,10 +262,10 @@ class FeatureFusionModule(nn.Module):
         return wd_params, nowd_params
 
 
-class BiSeNetV1_without_Arm(nn.Module):
+class BiSeNetV1_without_ffm(nn.Module):
 
     def __init__(self, n_classes, aux_mode='train', *args, **kwargs):
-        super(BiSeNetV1_without_Arm, self).__init__()
+        super(BiSeNetV1_without_ffm, self).__init__()
         self.cp = ContextPath()
         self.sp = SpatialPath()
         self.ffm = FeatureFusionModule(256, 256)
@@ -321,7 +315,7 @@ class BiSeNetV1_without_Arm(nn.Module):
 
 
 if __name__ == "__main__":
-    net = BiSeNetV1_without_Arm(2)
+    net = BiSeNetV1_without_ffm(2)
     net.cuda()
     net.eval()
     in_ten = torch.randn(16, 3, 512, 512).cuda()

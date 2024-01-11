@@ -9,10 +9,11 @@ from lib.models.ddrnet import ddrnet_23, ddrnet_silm
 from lib.models.bisenetv1 import BiSeNetV1
 from lib.models.bisenetv2 import BiSeNetV2
 from lib.models.bisenetv1_without_arm import BiSeNetV1_without_Arm
+from lib.models.bisenetv1_without_ffm import BiSeNetV1_without_ffm
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str,
-                    default='ddrnet_silm', help='model name')
+                    default='bisenetv1_without_ffm', help='model name')
 parser.add_argument('--img_size', type=tuple,
                     default=(512,512), help='input patch size of network input')
 parser.add_argument('--num_classes', type=int,
@@ -28,6 +29,8 @@ if __name__ == '__main__':
         model = BiSeNetV1(args.num_classes)
     elif args.model == 'bisenetv1_without_arm':
         model = BiSeNetV1_without_Arm(args.num_classes)
+    elif args.model == 'bisenetv1_without_ffm':
+        model = BiSeNetV1_without_ffm(args.num_classes)
     elif args.model == 'bisenetv2':
         model = BiSeNetV2(args.num_classes)
     else:
