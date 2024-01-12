@@ -10,6 +10,7 @@ from lib.models.bisenetv1 import BiSeNetV1
 from lib.models.bisenetv2 import BiSeNetV2
 from lib.models.bisenetv1_without_arm import BiSeNetV1_without_Arm
 from lib.models.bisenetv1_without_ffm import BiSeNetV1_without_ffm
+from lib.models.bisenetv1_with_aspp import BiSeNetV1_with_aspp
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str,
@@ -31,6 +32,8 @@ if __name__ == '__main__':
         model = BiSeNetV1_without_Arm(args.num_classes)
     elif args.model == 'bisenetv1_without_ffm':
         model = BiSeNetV1_without_ffm(args.num_classes)
+    elif args.model == 'bisenetv1_with_aspp':
+        model = BiSeNetV1_with_aspp(args.num_classes)
     elif args.model == 'bisenetv2':
         model = BiSeNetV2(args.num_classes)
     else:
