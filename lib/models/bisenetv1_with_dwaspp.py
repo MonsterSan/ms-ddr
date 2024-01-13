@@ -73,7 +73,7 @@ class ASPP(nn.Module):
         self.convs = nn.ModuleList(modules)
 
         self.project = nn.Sequential(
-            depthwise_separable_conv(5*in_channels, out_channels, ks=1, padding=0, dilation=1,bias=False),
+            depthwise_separable_conv(5*out_channels, out_channels, ks=1, padding=0, dilation=1,bias=False),
             #nn.Conv2d(5 * out_channels, out_channels, 1, bias=False),
             nn.BatchNorm2d(out_channels),
             nn.ReLU(),
@@ -82,8 +82,10 @@ class ASPP(nn.Module):
     def forward(self, x):
         res = []
         for conv in self.convs:
-            res.append(conv(x))
+            y = conv(x)
+            res.append(y)
         res = torch.cat(res, dim=1)
+        #print(res.shape)
         return self.project(res)
 
 
