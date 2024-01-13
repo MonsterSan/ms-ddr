@@ -14,7 +14,6 @@ from lib.models.bisenetv2 import BiSeNetV2
 from lib.models.bisenetv1_without_arm import BiSeNetV1_without_Arm
 from lib.models.bisenetv1_without_ffm import BiSeNetV1_without_ffm
 from lib.models.bisenetv1_with_aspp import BiSeNetV1_with_aspp
-from lib.models.bisenetv1_with_dwaspp import BiSeNetV1_with_dwaspp
 
 from torch.nn.modules.loss import CrossEntropyLoss
 from lib.losses.ohem_cross_entropy_loss import OhemCrossEntropyLoss

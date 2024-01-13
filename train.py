@@ -18,7 +18,6 @@ from lib.models.bisenetv2 import BiSeNetV2
 from lib.models.bisenetv1_without_arm import BiSeNetV1_without_Arm
 from lib.models.bisenetv1_without_ffm import BiSeNetV1_without_ffm
 from lib.models.bisenetv1_with_aspp import BiSeNetV1_with_aspp
-from lib.models.bisenetv1_with_dwaspp import BiSeNetV1_with_dwaspp
 
 from torch.optim.lr_scheduler import PolynomialLR
 from torch.nn.modules.loss import CrossEntropyLoss
@@ -99,10 +98,6 @@ if __name__ == "__main__":
         loss_weights = [1, 1, 1]
     elif args.model == 'bisenetv1_with_aspp':
         model = BiSeNetV1_with_aspp(args.num_classes)
-        losses = [OhemCrossEntropyLoss(), OhemCrossEntropyLoss(), OhemCrossEntropyLoss()]
-        loss_weights = [1, 1, 1]
-    elif args.model == 'bisenetv1_with_dwaspp':
-        model = BiSeNetV1_with_dwaspp(args.num_classes)
         losses = [OhemCrossEntropyLoss(), OhemCrossEntropyLoss(), OhemCrossEntropyLoss()]
         loss_weights = [1, 1, 1]
     elif args.model == 'bisenetv2':

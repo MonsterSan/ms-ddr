@@ -14,7 +14,6 @@ from lib.models.bisenetv2 import BiSeNetV2
 from lib.models.bisenetv1_without_arm import BiSeNetV1_without_Arm
 from lib.models.bisenetv1_without_ffm import BiSeNetV1_without_ffm
 from lib.models.bisenetv1_with_aspp import BiSeNetV1_with_aspp
-from lib.models.bisenetv1_with_dwaspp import BiSeNetV1_with_dwaspp
 
 from torch.nn.modules.loss import CrossEntropyLoss
 from lib.losses.ohem_cross_entropy_loss import OhemCrossEntropyLoss
@@ -24,7 +23,7 @@ from lib.utils.confusion_matrix import ConfusionMatrix
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str,
-                    default='bisenetv1_with_dwaspp', help='model name')
+                    default='bisenetv1_with_aspp', help='model name')
 parser.add_argument('--log_path', type=str,
                     default='./run/bisenetv1_with_dwaspp_20240113_211031', help='log path')
 parser.add_argument('--checkpoint_type', type=str,
@@ -72,10 +71,6 @@ if __name__ == '__main__':
         loss_weights = [1, 1, 1]
     elif args.model == 'bisenetv1_with_aspp':
         model = BiSeNetV1_with_aspp(args.num_classes)
-        losses = [OhemCrossEntropyLoss(), OhemCrossEntropyLoss(), OhemCrossEntropyLoss()]
-        loss_weights = [1, 1, 1]
-    elif args.model == 'bisenetv1_with_dwaspp':
-        model = BiSeNetV1_with_dwaspp(args.num_classes)
         losses = [OhemCrossEntropyLoss(), OhemCrossEntropyLoss(), OhemCrossEntropyLoss()]
         loss_weights = [1, 1, 1]
     elif args.model == 'bisenetv2':

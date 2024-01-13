@@ -1,2 +1,0 @@
-[23:11:40.612] Namespace(model='bisenetv1_with_dwaspp', log_path='./run/bisenetv1_with_dwaspp_20240113_211031', checkpoint_type='best_miou', img_size=(512, 512), num_classes=2)
-[23:12:27.401] fps: 214.24280716969972

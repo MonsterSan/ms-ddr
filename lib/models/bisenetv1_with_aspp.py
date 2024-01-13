@@ -40,20 +40,55 @@ class ASPP(nn.Module):
     def __init__(self, in_channels, out_channels, atrous_rates=None):
         super(ASPP, self).__init__()
         if not atrous_rates:
-            atrous_rates = [6,12,18]
-        modules = []
-        modules.append(nn.Sequential(
+            atrous_rates = [6, 12, 18]
+        # 1*1 branch
+        self.branch1 = nn.Sequential(
             nn.Conv2d(in_channels, out_channels, 1, bias=False),
             nn.BatchNorm2d(out_channels),
-            nn.ReLU()))
+            nn.ReLU()
+        )
 
-        rate1, rate2, rate3 = atrous_rates
-        modules.append(ASPPConv(in_channels, out_channels, rate1))
-        modules.append(ASPPConv(in_channels, out_channels, rate2))
-        modules.append(ASPPConv(in_channels, out_channels, rate3))
-        modules.append(ASPPPooling(in_channels, out_channels))
+        # 3*3 rate 6 branch
+        self.branch2 = nn.Sequential(
+            nn.Conv2d(in_channels, out_channels, 3, padding=atrous_rates[0], dilation=atrous_rates[0], bias=False),
+            nn.BatchNorm2d(out_channels),
+            nn.ReLU()
+        )
 
-        self.convs = nn.ModuleList(modules)
+        # 3*3 rate 12 branch
+        self.branch3 = nn.Sequential(
+            nn.Conv2d(in_channels, out_channels, 3, padding=atrous_rates[1], dilation=atrous_rates[1], bias=False),
+            nn.BatchNorm2d(out_channels),
+            nn.ReLU()
+        )
+
+        # 3*3 rate 18 branch
+        self.branch4 = nn.Sequential(
+            nn.Conv2d(in_channels, out_channels, 3, padding=atrous_rates[2], dilation=atrous_rates[2], bias=False),
+            nn.BatchNorm2d(out_channels),
+            nn.ReLU()
+        )
+
+        # avgpool branch
+        self.branch5 = nn.Sequential(
+            nn.AdaptiveAvgPool2d(1),
+            nn.Conv2d(in_channels, out_channels,1,bias=False),
+            nn.BatchNorm2d(out_channels),
+            nn.ReLU()
+        )
+        #modules = []
+        #modules.append(nn.Sequential(
+        #    nn.Conv2d(in_channels, out_channels, 1, bias=False),
+        #    nn.BatchNorm2d(out_channels),
+        #    nn.ReLU()))
+
+        #rate1, rate2, rate3 = atrous_rates
+        #modules.append(ASPPConv(in_channels, out_channels, rate1))
+        #modules.append(ASPPConv(in_channels, out_channels, rate2))
+        #modules.append(ASPPConv(in_channels, out_channels, rate3))
+        #modules.append(ASPPPooling(in_channels, out_channels))
+
+        #self.convs = nn.ModuleList(modules)
 
         self.project = nn.Sequential(
             nn.Conv2d(5 * out_channels, out_channels, 1, bias=False),
@@ -62,11 +97,19 @@ class ASPP(nn.Module):
             nn.Dropout(0.5))
 
     def forward(self, x):
-        res = []
-        for conv in self.convs:
-            res.append(conv(x))
-        res = torch.cat(res, dim=1)
-        return self.project(res)
+        #res = []
+        out1 = self.branch1(x)
+        out2 = self.branch2(x)
+        out3 = self.branch3(x)
+        out4 = self.branch4(x)
+        out5 = self.branch5(x)
+        size = x.shape[-2:]
+        out5 = F.interpolate(out5, size=size,mode='bilinear', align_corners=False)
+        out = torch.cat([out1, out2, out3, out4, out5], dim=1)
+        #for conv in self.convs:
+        #    res.append(conv(x))
+        #res = torch.cat(res, dim=1)
+        return self.project(out)
 
 
 class ConvBNReLU(nn.Module):
@@ -74,11 +117,11 @@ class ConvBNReLU(nn.Module):
     def __init__(self, in_chan, out_chan, ks=3, stride=1, padding=1, *args, **kwargs):
         super(ConvBNReLU, self).__init__()
         self.conv = nn.Conv2d(in_chan,
-                out_chan,
-                kernel_size = ks,
-                stride = stride,
-                padding = padding,
-                bias = False)
+                              out_chan,
+                              kernel_size=ks,
+                              stride=stride,
+                              padding=padding,
+                              bias=False)
         self.bn = BatchNorm2d(out_chan)
         self.relu = nn.ReLU(inplace=True)
         self.init_weight()
@@ -123,7 +166,7 @@ class BiSeNetOutput(nn.Module):
         self.conv = ConvBNReLU(in_chan, mid_chan, ks=3, stride=1, padding=1)
         self.conv_out = nn.Conv2d(mid_chan, out_chan, kernel_size=1, bias=True)
         self.up = nn.Upsample(scale_factor=up_factor,
-                mode='bilinear', align_corners=False)
+                              mode='bilinear', align_corners=False)
         self.init_weight()
 
     def forward(self, x):
@@ -148,7 +191,6 @@ class BiSeNetOutput(nn.Module):
             elif isinstance(module, nn.modules.batchnorm._BatchNorm):
                 nowd_params += list(module.parameters())
         return wd_params, nowd_params
-
 
 
 class ContextPath(nn.Module):
@@ -181,7 +223,7 @@ class ContextPath(nn.Module):
         feat16_up = self.up16(feat16_sum)
         feat16_up = self.conv_head16(feat16_up)
 
-        return feat16_up, feat32_up # x8, x16
+        return feat16_up, feat32_up  # x8, x16
 
     def init_weight(self):
         for ly in self.children():
@@ -241,11 +283,11 @@ class FeatureFusionModule(nn.Module):
         self.convblk = ConvBNReLU(in_chan, out_chan, ks=1, stride=1, padding=0)
         ## use conv-bn instead of 2 layer mlp, so that tensorrt 7.2.3.4 can work for fp16
         self.conv = nn.Conv2d(out_chan,
-                out_chan,
-                kernel_size = 1,
-                stride = 1,
-                padding = 0,
-                bias = False)
+                              out_chan,
+                              kernel_size=1,
+                              stride=1,
+                              padding=0,
+                              bias=False)
         self.bn = nn.BatchNorm2d(out_chan)
         #  self.conv1 = nn.Conv2d(out_chan,
         #          out_chan//4,
@@ -347,7 +389,7 @@ class BiSeNetV1_with_aspp(nn.Module):
 
 
 if __name__ == "__main__":
-    net = BiSeNetV1(2)
+    net = BiSeNetV1_with_aspp(2)
     net.cuda()
     net.eval()
     in_ten = torch.randn(16, 3, 512, 512).cuda()
