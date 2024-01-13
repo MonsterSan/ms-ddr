@@ -17,7 +17,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str,
                     default='bisenetv1_with_dwaspp', help='model name')
 parser.add_argument('--log_path', type=str,
-                    default='./run/bisenetv1_without_ffm_20240111_215947', help='log path')
+                    default='./run/bisenetv1_with_dwaspp_20240113_211031', help='log path')
 parser.add_argument('--checkpoint_type', type=str,
                     default='best_miou', help="best_miou or last or min_loss")
 parser.add_argument('--img_size', type=tuple,
@@ -37,10 +37,10 @@ if __name__ == '__main__':
         model = BiSeNetV1_without_Arm(args.num_classes)
     elif args.model == 'bisenetv1_without_ffm':
         model = BiSeNetV1_without_ffm(args.num_classes)
-    elif args.model == 'bisenetv1_without_ffm':
+    elif args.model == 'bisenetv1_with_aspp':
         model = BiSeNetV1_with_aspp(args.num_classes)
     elif args.model == 'bisenetv1_with_dwaspp':
-        model = BiSeNetV1_with_dwaspp
+        model = BiSeNetV1_with_dwaspp(args.num_classes)
     elif args.model == 'bisenetv2':
         model = BiSeNetV2(args.num_classes)
     else:

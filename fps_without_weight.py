@@ -15,7 +15,7 @@ from lib.models.bisenetv1_with_dwaspp import BiSeNetV1_with_dwaspp
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str,
-                    default='bisenetv1_without_ffm', help='model name')
+                    default='bisenetv1_with_dwaspp', help='model name')
 parser.add_argument('--img_size', type=tuple,
                     default=(512,512), help='input patch size of network input')
 parser.add_argument('--num_classes', type=int,
