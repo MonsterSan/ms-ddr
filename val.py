@@ -25,7 +25,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str,
                     default='bisenetv1_with_aspp', help='model name')
 parser.add_argument('--log_path', type=str,
-                    default='./run/bisenetv1_with_dwaspp_20240113_211031', help='log path')
+                    default='./run/bisenetv1_with_aspp_20240114_002158', help='log path')
 parser.add_argument('--checkpoint_type', type=str,
                     default='best_miou', help="best_miou or last or min_loss")
 # D:\\data\\Crack_Forest_paddle\\Crack_Forest_paddle

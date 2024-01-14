@@ -9,7 +9,7 @@ def save_log(confmat, losses, log_path, epoch):
     Pre = Pre.item() * 100
     with open(log_path, "a") as lpath:
         lpath.write(
-            str(epoch) + "\t" + str(losses.avg) + "\t" + str(miou) + "\t" + str(acc_global) + "\t" + str(
+            str(epoch+1) + "\t" + str(losses.avg) + "\t" + str(miou) + "\t" + str(acc_global) + "\t" + str(
                 aver_row_correct[0]) + "-" + str(aver_row_correct[1]) + "\t" + str(iou[0]) + "-" + str(
                 iou[1]) + "\t" + str(F1) + "\t" + str(Rec) + "\t" + str(Pre) + "\n")
     return miou
