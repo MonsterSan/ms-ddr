@@ -205,7 +205,7 @@ class SpatialPath(nn.Module):
 
 class PSPModule(nn.Module):
     # (1, 2, 3, 6)
-    def __init__(self, sizes=(1, 3, 6, 8), dimension=2):
+    def __init__(self, sizes=(1,3,6,8), dimension=2):
         super(PSPModule, self).__init__()
         self.stages = nn.ModuleList([self._make_stage(size, dimension) for size in sizes])
 
@@ -356,7 +356,7 @@ class FeatureFusionModule(nn.Module):
 
     def forward(self, fsp, fcp):
         fcat = torch.cat([fsp, fcp], dim=1)
-        print(fcat.shape)
+        #print(fcat.shape)
         feat = self.convblk(fcat)
         afnb_feat = self.afnb(fcat,feat)
 
