@@ -20,6 +20,7 @@ from lib.models.bisenetv1_without_ffm import BiSeNetV1_without_ffm
 from lib.models.bisenetv1_with_aspp import BiSeNetV1_with_aspp
 from lib.models.bisenetv1_afnb import BiSeNetV1_afnb
 from lib.models.bisenetv1_afnb_aspp import BiSeNetV1_afnb_aspp
+from lib.models.bisenetv1_dappm import BiSeNetV1_dappm
 
 from torch.optim.lr_scheduler import PolynomialLR
 from torch.nn.modules.loss import CrossEntropyLoss
@@ -33,7 +34,7 @@ from utils.save_weight import save_weights
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str,
-                    default='bisenetv1_afnb_aspp', help='model name')
+                    default='bisenetv1_dappm', help='model name')
 # D:\\data\\Crack_Forest_paddle\\Crack_Forest_paddle
 # /home/user/data/lumianliefeng/Crack_Forest_paddle
 parser.add_argument('--dataset_root', type=str,
@@ -108,6 +109,10 @@ if __name__ == "__main__":
         loss_weights = [1, 1, 1]
     elif args.model == 'bisenetv1_afnb_aspp':
         model = BiSeNetV1_afnb_aspp(args.num_classes)
+        losses = [OhemCrossEntropyLoss(), OhemCrossEntropyLoss(), OhemCrossEntropyLoss()]
+        loss_weights = [1, 1, 1]
+    elif args.model == 'bisenetv1_dappm':
+        model = BiSeNetV1_dappm(args.num_classes)
         losses = [OhemCrossEntropyLoss(), OhemCrossEntropyLoss(), OhemCrossEntropyLoss()]
         loss_weights = [1, 1, 1]
     elif args.model == 'bisenetv2':
