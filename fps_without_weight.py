@@ -13,10 +13,11 @@ from lib.models.bisenetv1_without_ffm import BiSeNetV1_without_ffm
 from lib.models.bisenetv1_with_aspp import BiSeNetV1_with_aspp
 from lib.models.bisenetv1_afnb import BiSeNetV1_afnb
 from lib.models.bisenetv1_afnb_aspp import BiSeNetV1_afnb_aspp
+from lib.models.bisenetv1_cpatten import BiSeNetV1_cpatten
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str,
-                    default='bisenetv1_afnb_aspp', help='model name')
+                    default='bisenetv1_cpatten', help='model name')
 parser.add_argument('--img_size', type=tuple,
                     default=(512,512), help='input patch size of network input')
 parser.add_argument('--num_classes', type=int,
@@ -39,6 +40,8 @@ if __name__ == '__main__':
     elif args.model == 'bisenetv1_afnb':
         model = BiSeNetV1_afnb(args.num_classes)
     elif args.model == 'bisenetv1_afnb_aspp':
+        model = BiSeNetV1_afnb_aspp(args.num_classes)
+    elif args.model == 'bisenetv1_cpatten':
         model = BiSeNetV1_afnb_aspp(args.num_classes)
     elif args.model == 'bisenetv2':
         model = BiSeNetV2(args.num_classes)
