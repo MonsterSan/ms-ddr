@@ -12,11 +12,7 @@ from lib.models.ddrnet import ddrnet_23, ddrnet_silm
 from lib.models.bisenetv1 import BiSeNetV1
 from lib.models.bisenetv2 import BiSeNetV2
 from lib.models.bisenetv1_without_arm import BiSeNetV1_without_Arm
-from lib.models.bisenetv1_without_ffm import BiSeNetV1_without_ffm
 from lib.models.bisenetv1_with_aspp import BiSeNetV1_with_aspp
-from lib.models.bisenetv1_afnb import BiSeNetV1_afnb
-from lib.models.bisenetv1_afnb_aspp import BiSeNetV1_afnb_aspp
-from lib.models.bisenetv1_cpatten import BiSeNetV1_cpatten
 
 from torch.nn.modules.loss import CrossEntropyLoss
 from lib.losses.ohem_cross_entropy_loss import OhemCrossEntropyLoss
@@ -68,24 +64,8 @@ if __name__ == '__main__':
         model = BiSeNetV1_without_Arm(args.num_classes)
         losses = [OhemCrossEntropyLoss(), OhemCrossEntropyLoss(), OhemCrossEntropyLoss()]
         loss_weights = [1, 1, 1]
-    elif args.model == 'bisenetv1_without_ffm':
-        model = BiSeNetV1_without_ffm(args.num_classes)
-        losses = [OhemCrossEntropyLoss(), OhemCrossEntropyLoss(), OhemCrossEntropyLoss()]
-        loss_weights = [1, 1, 1]
     elif args.model == 'bisenetv1_with_aspp':
         model = BiSeNetV1_with_aspp(args.num_classes)
-        losses = [OhemCrossEntropyLoss(), OhemCrossEntropyLoss(), OhemCrossEntropyLoss()]
-        loss_weights = [1, 1, 1]
-    elif args.model == 'bisenetv1_afnb':
-        model = BiSeNetV1_afnb(args.num_classes)
-        losses = [OhemCrossEntropyLoss(), OhemCrossEntropyLoss(), OhemCrossEntropyLoss()]
-        loss_weights = [1, 1, 1]
-    elif args.model == 'bisenetv1_afnb_aspp':
-        model = BiSeNetV1_afnb_aspp(args.num_classes)
-        losses = [OhemCrossEntropyLoss(), OhemCrossEntropyLoss(), OhemCrossEntropyLoss()]
-        loss_weights = [1, 1, 1]
-    elif args.model == 'bisenetv1_cpatten':
-        model = BiSeNetV1_cpatten(args.num_classes)
         losses = [OhemCrossEntropyLoss(), OhemCrossEntropyLoss(), OhemCrossEntropyLoss()]
         loss_weights = [1, 1, 1]
     elif args.model == 'bisenetv2':
