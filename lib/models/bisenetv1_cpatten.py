@@ -38,7 +38,6 @@ class ConvBNReLU(nn.Module):
                 nn.init.kaiming_normal_(ly.weight, a=1)
                 if not ly.bias is None: nn.init.constant_(ly.bias, 0)
 
-
     def get_params(self):
         wd_params, nowd_params = [], []
         for name, module in self.named_modules():
@@ -322,21 +321,21 @@ class BiSeNetV1_cpatten(nn.Module):
             self.conv_out16 = BiSeNetOutput(128, 64, n_classes, up_factor=8)
             self.conv_out32 = BiSeNetOutput(128, 64, n_classes, up_factor=16)
         self.cp_atten = cpattention(128, 128)
-        self.conv = ConvBNReLU(128, 256,ks=1,stride=1,padding=0)
+        self.conv = ConvBNReLU(128, 256, ks=1, stride=1, padding=0)
         self.init_weight()
 
     def forward(self, x):
         H, W = x.size()[2:]
         feat_cp8, feat_cp16 = self.cp(x)
         cp_atten = self.cp_atten(feat_cp8)
-        print("cp_atten shape {}".format(cp_atten.shape))
+        # print("cp_atten shape {}".format(cp_atten.shape))
         feat_sp = self.sp(x)
-        print("feat sp shape {}".format(feat_sp.shape))
-        sp_cpatten = torch.mul(feat_sp, cp_atten)
-        feat_fuse = feat_sp+sp_cpatten
+        # print("feat sp shape {}".format(feat_sp.shape))
+        sp_cpatten = feat_sp * cp_atten
+        feat_fuse = feat_sp + sp_cpatten
         feat_fuse = self.conv(feat_fuse)
-        print(feat_fuse.shape)
-        #feat_fuse = self.ffm(feat_sp, feat_cp8)
+        # print(feat_fuse.shape)
+        # feat_fuse = self.ffm(feat_sp, feat_cp8)
         # 16 256 64 64
 
         feat_out = self.conv_out(feat_fuse)
