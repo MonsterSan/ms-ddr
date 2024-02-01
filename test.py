@@ -14,6 +14,7 @@ from lib.models.bisenetv2 import BiSeNetV2
 from lib.models.bisenetv1_without_arm import BiSeNetV1_without_Arm
 from lib.models.bisenetv1_with_aspp import BiSeNetV1_with_aspp
 from lib.models.bisenetv1_shortaspp import BiSeNetV1_shortaspp
+from lib.models.bisenetv1_noarmavg import BiSeNetV1_noarmavg
 
 from torch.nn.modules.loss import CrossEntropyLoss
 from lib.losses.ohem_cross_entropy_loss import OhemCrossEntropyLoss
@@ -23,9 +24,9 @@ from lib.utils.confusion_matrix import ConfusionMatrix
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str,
-                    default='bisenetv1_shortaspp', help='model name')
+                    default='bisenetv1_noarmavg', help='model name')
 parser.add_argument('--log_path', type=str,
-                    default='./run/bisenetv1_shortaspp_20240131_200146', help='log path')
+                    default='./run/bisenetv1_noarmavg_20240201_105206', help='log path')
 parser.add_argument('--checkpoint_type', type=str,
                     default='best_miou', help="best_miou or last or min_loss")
 # D:\\data\\Crack_Forest_paddle\\Crack_Forest_paddle
@@ -71,6 +72,10 @@ if __name__ == '__main__':
         loss_weights = [1, 1, 1]
     elif args.model == 'bisenetv1_shortaspp':
         model = BiSeNetV1_shortaspp(args.num_classes)
+        losses = [OhemCrossEntropyLoss(), OhemCrossEntropyLoss(), OhemCrossEntropyLoss()]
+        loss_weights = [1, 1, 1]
+    elif args.model == 'bisenetv1_noarmavg':
+        model = BiSeNetV1_noarmavg(args.num_classes)
         losses = [OhemCrossEntropyLoss(), OhemCrossEntropyLoss(), OhemCrossEntropyLoss()]
         loss_weights = [1, 1, 1]
     elif args.model == 'bisenetv2':

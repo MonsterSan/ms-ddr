@@ -28,15 +28,31 @@
 [02:21:06.627] fps: 212.0315031711957
 [16:00:47.151] Namespace(model='bisenetv1_with_aspp', img_size=(512, 512), num_classes=2)
 [16:01:36.244] fps: 204.2644123276141
-[16:02:02.803] Namespace(model='bisenetv1_afnb', img_size=(512, 512), num_classes=2)
-[16:02:48.354] fps: 220.18388462965504
-[23:35:58.806] Namespace(model='bisenetv1_afnb_aspp', img_size=(512, 512), num_classes=2)
-[23:36:54.260] fps: 180.79530582158694
 [16:55:42.104] Namespace(model='bisenetv1_dappm', img_size=(512, 512), num_classes=2)
 [16:56:38.681] fps: 177.1454763021218
-[22:29:20.872] Namespace(model='bisenetv1_shortaspp', img_size=(512, 512), num_classes=2)
-[22:30:04.258] fps: 231.0597371787378
-[22:30:54.552] Namespace(model='bisenetv1_shortaspp', img_size=(512, 512), num_classes=2)
-[22:31:45.517] fps: 196.7706653898111
-[22:31:57.153] Namespace(model='bisenetv1_shortaspp', img_size=(512, 512), num_classes=2)
-[22:32:44.717] fps: 210.82025441938757
+[13:30:40.304] Namespace(model='bisenetv1_shortaspp', img_size=(512, 512), num_classes=2)
+[13:31:28.821] fps: 206.6854618866961
+[13:31:36.426] Namespace(model='bisenetv1_shortaspp', img_size=(512, 512), num_classes=2)
+[13:32:24.078] fps: 210.45622161772155
+[13:32:34.411] Namespace(model='bisenetv1_shortaspp', img_size=(512, 512), num_classes=2)
+[13:33:23.486] fps: 204.3182897025892
+[13:33:57.649] Namespace(model='bisenetv1_shortaspp', img_size=(512, 512), num_classes=2)
+[13:34:47.290] fps: 202.01120960544253
+[13:34:58.479] Namespace(model='bisenetv1_noarmavg', img_size=(512, 512), num_classes=2)
+[13:35:38.790] fps: 248.95947497646856
+[13:36:00.599] Namespace(model='bisenetv1_noarmavg', img_size=(512, 512), num_classes=2)
+[13:36:40.410] fps: 252.03478854326644
+[13:36:50.391] Namespace(model='bisenetv1_noarmavg', img_size=(512, 512), num_classes=2)
+[13:37:29.286] fps: 257.9817133622984
+[13:41:19.299] Namespace(model='bisenetv1', img_size=(512, 512), num_classes=2)
+[13:41:58.441] fps: 256.29879521288103
+[13:42:13.581] Namespace(model='bisenetv1', img_size=(512, 512), num_classes=2)
+[13:42:52.345] fps: 258.78649272152194
+[13:42:57.080] Namespace(model='bisenetv1', img_size=(512, 512), num_classes=2)
+[13:43:39.761] fps: 235.09362894855312
+[13:46:24.090] Namespace(model='ddrnet_silm', img_size=(512, 512), num_classes=2)
+[13:47:04.313] fps: 249.31128440060607
+[13:49:17.794] Namespace(model='ddrnet_silm', img_size=(512, 512), num_classes=2)
+[13:50:01.293] fps: 230.5853091574958
+[13:50:06.563] Namespace(model='ddrnet_silm', img_size=(512, 512), num_classes=2)
+[13:50:43.948] fps: 268.2077463359636
