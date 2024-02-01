@@ -21,6 +21,7 @@ from lib.models.bisenetv1_shortaspp import BiSeNetV1_shortaspp
 from lib.models.bisenetv1_noarmavg import BiSeNetV1_noarmavg
 from lib.models.bisenetv1_noarmavg_sa import BiSeNetV1_noarmavg_sa
 from lib.models.bisenetv1_noarmavgno64 import BiSeNetV1_noarmavg_no64
+from lib.models.bisenetv1_noarm_aspp import BiSeNetV1_noarm_aspp
 
 from torch.optim.lr_scheduler import PolynomialLR
 from torch.nn.modules.loss import CrossEntropyLoss
@@ -34,7 +35,7 @@ from utils.save_weight import save_weights
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str,
-                    default='bisenetv1_noarmavg_no64', help='model name')
+                    default='bisenetv1_noarm_aspp', help='model name')
 # D:\\data\\Crack_Forest_paddle\\Crack_Forest_paddle
 # /home/user/data/lumianliefeng/Crack_Forest_paddle
 parser.add_argument('--dataset_root', type=str,
@@ -105,6 +106,10 @@ if __name__ == "__main__":
         loss_weights = [1, 1, 1]
     elif args.model == 'bisenetv1_noarmavg':
         model = BiSeNetV1_noarmavg(args.num_classes)
+        losses = [OhemCrossEntropyLoss(), OhemCrossEntropyLoss(), OhemCrossEntropyLoss()]
+        loss_weights = [1, 1, 1]
+    elif args.model == 'bisenetv1_noarm_aspp':
+        model = BiSeNetV1_noarm_aspp(args.num_classes)
         losses = [OhemCrossEntropyLoss(), OhemCrossEntropyLoss(), OhemCrossEntropyLoss()]
         loss_weights = [1, 1, 1]
     elif args.model == 'bisenetv1_noarmavg_no64':
