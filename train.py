@@ -19,6 +19,7 @@ from lib.models.bisenetv1_without_arm import BiSeNetV1_without_Arm
 from lib.models.bisenetv1_with_aspp import BiSeNetV1_with_aspp
 from lib.models.bisenetv1_shortaspp import BiSeNetV1_shortaspp
 from lib.models.bisenetv1_noarmavg import BiSeNetV1_noarmavg
+from lib.models.bisenetv1_noarmavg_sa import BiSeNetV1_noarmavg
 
 from torch.optim.lr_scheduler import PolynomialLR
 from torch.nn.modules.loss import CrossEntropyLoss
