@@ -14,10 +14,11 @@ from lib.models.bisenetv1_shortaspp import BiSeNetV1_shortaspp
 from lib.models.bisenetv1_noarmavg import BiSeNetV1_noarmavg
 from lib.models.bisenetv1_noarmavg_sa import BiSeNetV1_noarmavg_sa
 from lib.models.bisenetv1_noarmavgno64 import BiSeNetV1_noarmavg_no64
+from lib.models.bisenetv1_noarm_aspp import BiSeNetV1_noarm_aspp
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str,
-                    default='bisenetv1_noarmavg_no64', help='model name')
+                    default='bisenetv1_noarm_aspp', help='model name')
 parser.add_argument('--img_size', type=tuple,
                     default=(512,512), help='input patch size of network input')
 parser.add_argument('--num_classes', type=int,
@@ -39,6 +40,8 @@ if __name__ == '__main__':
         model = BiSeNetV1_shortaspp(args.num_classes)
     elif args.model == 'bisenetv1_noarmavg':
         model = BiSeNetV1_noarmavg(args.num_classes)
+    elif args.model == 'bisenetv1_noarm_aspp':
+        model = BiSeNetV1_noarm_aspp(args.num_classes)
     elif args.model == 'bisenetv1_noarmavg_no64':
         model = BiSeNetV1_noarmavg_no64(args.num_classes)
     elif args.model == 'bisenetv1_noarmavg_sa':
