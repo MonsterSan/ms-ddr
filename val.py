@@ -8,10 +8,11 @@ import sys
 from lib.datasets.dataset_crack import CrackDataset
 from torch.utils.data import DataLoader
 
-from lib.models.ddrnet import ddrnet_23, ddrnet_silm
+from lib.models.ddrnet import ddrnet_silm
 from lib.models.bisenetv1 import BiSeNetV1
 from lib.models.bisenetv2 import BiSeNetV2
 from lib.models.bisenetv1_noarm import BiSeNetV1_noarm
+from lib.models.bisenetv1_noarm_global2aspp import BiSeNetV1_noarm_global2aspp
 
 from torch.nn.modules.loss import CrossEntropyLoss
 from lib.losses.ohem_cross_entropy_loss import OhemCrossEntropyLoss
@@ -21,7 +22,7 @@ from lib.utils.confusion_matrix import ConfusionMatrix
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str,
-                    default='bisenetv1_noarm', help='model name')
+                    default='bisenetv1_noarm_global2aspp', help='model name')
 parser.add_argument('--log_path', type=str,
                     default='./run/bisenetv1_noarm_20240110_200635', help='log path')
 parser.add_argument('--checkpoint_type', type=str,

@@ -97,8 +97,10 @@ if __name__ == "__main__":
             model = BiSeNetV1_noarm(args.num_classes)
         elif args.model == 'bisenetv1_noarmglobal':
             model = BiSeNetV1_noarmglobal(args.num_classes)
-        elif args.model == 'bisenetv1_noarmglobal_global2aspp':
+        elif args.model == 'bisenetv1_noarm_global2aspp':
             model = BiSeNetV1_noarm_global2aspp(args.num_classes)
+        else:
+            raise KeyError("unknown model: {}".format(args.model))
 
         losses = [OhemCrossEntropyLoss(), OhemCrossEntropyLoss(), OhemCrossEntropyLoss()]
         loss_weights = [1, 1, 1]
