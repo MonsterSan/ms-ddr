@@ -9,7 +9,6 @@ from torchvision.ops.misc import Conv2dNormActivation
 from lib.models.resnet import Resnet18
 from torch.nn import BatchNorm2d
 
-
 class ConvBNReLU(nn.Module):
 
     def __init__(self, in_chan, out_chan, ks=3, stride=1, padding=1, *args, **kwargs):
@@ -122,13 +121,13 @@ class InvertedASPP(nn.Module):
         )
 
         # 3*3 rate 6 branch
-        self.branch2 = InvertedArtousConv(in_channels,out_channels,atrous_rates[0])
+        self.branch2 = InvertedArtousConv(in_channels, out_channels, atrous_rates[0])
 
         # 3*3 rate 12 branch
-        self.branch3 = InvertedArtousConv(in_channels,out_channels,atrous_rates[1])
+        self.branch3 = InvertedArtousConv(in_channels, out_channels, atrous_rates[1])
 
         # 3*3 rate 18 branch
-        self.branch4 = InvertedArtousConv(in_channels,out_channels,atrous_rates[2])
+        self.branch4 = InvertedArtousConv(in_channels, out_channels, atrous_rates[2])
 
         # avgpool branch
         self.branch5 = nn.Sequential(
