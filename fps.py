@@ -8,14 +8,13 @@ import sys
 from lib.models.ddrnet import ddrnet_23, ddrnet_silm
 from lib.models.bisenetv1 import BiSeNetV1
 from lib.models.bisenetv2 import BiSeNetV2
-from lib.models.bisenetv1_without_arm import BiSeNetV1_without_Arm
-from lib.models.bisenetv1_with_aspp import BiSeNetV1_with_aspp
+from lib.models.bisenetv1_noarm import BiSeNetV1_noarm
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str,
-                    default='bisenetv1_afnb', help='model name')
+                    default='bisenetv1', help='model name')
 parser.add_argument('--log_path', type=str,
-                    default='./run/bisenetv1_afnb_20240114_125141', help='log path')
+                    default='./run/bisenetv1_20240109_194145', help='log path')
 parser.add_argument('--checkpoint_type', type=str,
                     default='best_miou', help="best_miou or last or min_loss")
 parser.add_argument('--img_size', type=tuple,
@@ -31,10 +30,8 @@ if __name__ == '__main__':
         model = ddrnet_23(args.num_classes)
     elif args.model == 'bisenetv1':
         model = BiSeNetV1(args.num_classes)
-    elif args.model == 'bisenetv1_without_arm':
-        model = BiSeNetV1_without_Arm(args.num_classes)
-    elif args.model == 'bisenetv1_with_aspp':
-        model = BiSeNetV1_with_aspp(args.num_classes)
+    elif args.model == 'bisenetv1_noarm':
+        model = BiSeNetV1_noarm(args.num_classes)
     elif args.model == 'bisenetv2':
         model = BiSeNetV2(args.num_classes)
     else:

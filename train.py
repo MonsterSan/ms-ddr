@@ -15,13 +15,8 @@ from torch.utils.data import DataLoader
 from lib.models.ddrnet import ddrnet_23, ddrnet_silm
 from lib.models.bisenetv1 import BiSeNetV1
 from lib.models.bisenetv2 import BiSeNetV2
-from lib.models.bisenetv1_without_arm import BiSeNetV1_without_Arm
-from lib.models.bisenetv1_with_aspp import BiSeNetV1_with_aspp
-from lib.models.bisenetv1_shortaspp import BiSeNetV1_shortaspp
-from lib.models.bisenetv1_noarmavg import BiSeNetV1_noarmavg
-from lib.models.bisenetv1_noarmavg_sa import BiSeNetV1_noarmavg_sa
-from lib.models.bisenetv1_noarmavgno64 import BiSeNetV1_noarmavg_no64
-from lib.models.bisenetv1_noarm_aspp import BiSeNetV1_noarm_aspp
+from lib.models.bisenetv1_noarm import BiSeNetV1_noarm
+from lib.models.bisenetv1_noarmglobal import BiSeNetV1_noarmglobal
 
 from torch.optim.lr_scheduler import PolynomialLR
 from torch.nn.modules.loss import CrossEntropyLoss
@@ -92,32 +87,12 @@ if __name__ == "__main__":
         model = BiSeNetV1(args.num_classes)
         losses = [OhemCrossEntropyLoss(), OhemCrossEntropyLoss(), OhemCrossEntropyLoss()]
         loss_weights = [1, 1, 1]
-    elif args.model == 'bisenetv1_without_arm':
-        model = BiSeNetV1_without_Arm(args.num_classes)
+    elif args.model == 'bisenetv1_noarm':
+        model = BiSeNetV1_noarm(args.num_classes)
         losses = [OhemCrossEntropyLoss(), OhemCrossEntropyLoss(), OhemCrossEntropyLoss()]
         loss_weights = [1, 1, 1]
-    elif args.model == 'bisenetv1_shortaspp':
-        model = BiSeNetV1_shortaspp(args.num_classes)
-        losses = [OhemCrossEntropyLoss(), OhemCrossEntropyLoss(), OhemCrossEntropyLoss()]
-        loss_weights = [1, 1, 1]
-    elif args.model == 'bisenetv1_with_aspp':
-        model = BiSeNetV1_with_aspp(args.num_classes)
-        losses = [OhemCrossEntropyLoss(), OhemCrossEntropyLoss(), OhemCrossEntropyLoss()]
-        loss_weights = [1, 1, 1]
-    elif args.model == 'bisenetv1_noarmavg':
-        model = BiSeNetV1_noarmavg(args.num_classes)
-        losses = [OhemCrossEntropyLoss(), OhemCrossEntropyLoss(), OhemCrossEntropyLoss()]
-        loss_weights = [1, 1, 1]
-    elif args.model == 'bisenetv1_noarm_aspp':
-        model = BiSeNetV1_noarm_aspp(args.num_classes)
-        losses = [OhemCrossEntropyLoss(), OhemCrossEntropyLoss(), OhemCrossEntropyLoss()]
-        loss_weights = [1, 1, 1]
-    elif args.model == 'bisenetv1_noarmavg_no64':
-        model = BiSeNetV1_noarmavg_no64(args.num_classes)
-        losses = [OhemCrossEntropyLoss(), OhemCrossEntropyLoss(), OhemCrossEntropyLoss()]
-        loss_weights = [1, 1, 1]
-    elif args.model == 'bisenetv1_noarmavg_sa':
-        model = BiSeNetV1_noarmavg_sa(args.num_classes)
+    elif args.model == 'bisenetv1_noarmglobal':
+        model = BiSeNetV1_noarmglobal(args.num_classes)
         losses = [OhemCrossEntropyLoss(), OhemCrossEntropyLoss(), OhemCrossEntropyLoss()]
         loss_weights = [1, 1, 1]
     elif args.model == 'bisenetv2':
