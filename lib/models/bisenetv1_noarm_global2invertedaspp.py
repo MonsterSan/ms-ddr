@@ -91,7 +91,7 @@ class BiSeNetOutput(nn.Module):
 
 
 class InvertedArtousConv(nn.Module):
-    def __init__(self, inc, outc, atrous_rate, expend_ratio=6):
+    def __init__(self, inc, outc, atrous_rate, expend_ratio=2):
         super(InvertedArtousConv, self).__init__()
         hidden_channels = inc * expend_ratio
         self.conv = nn.Sequential(
