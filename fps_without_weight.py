@@ -12,12 +12,15 @@ from lib.models.bisenetv1_noarm import BiSeNetV1_noarm
 from lib.models.bisenetv1_noarmglobal import BiSeNetV1_noarmglobal
 from lib.models.bisenetv1_noarm_global2aspp import BiSeNetV1_noarm_global2aspp
 from lib.models.bisenetv1_noarm_global2invertedaspp import BiSeNetV1_noarm_global2invertedaspp
+from lib.models.bisenetv1_noarm_global2invertedaspp import InvertedASPP
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str,
-                    default='bisenetv1_noarm_global2invertedaspp', help='model name')
+                    default='invertedaspp', help='model name')
 parser.add_argument('--img_size', type=tuple,
-                    default=(512,512), help='input patch size of network input')
+                    default=(512, 512), help='input patch size of network input')
+parser.add_argument('--channels', type=int,
+                    default=3, help='input patch size of network input')
 parser.add_argument('--num_classes', type=int,
                     default=2, help='output channel of network')
 args = parser.parse_args()
@@ -39,6 +42,8 @@ if __name__ == '__main__':
         model = BiSeNetV1_noarm_global2invertedaspp(args.num_classes)
     elif args.model == 'bisenetv2':
         model = BiSeNetV2(args.num_classes)
+    elif args.model == 'invertedaspp':
+        model = InvertedASPP(512, 128)
     else:
         model = None
         raise KeyError("unknown model: {}".format(args.model))
@@ -51,13 +56,13 @@ if __name__ == '__main__':
     logging.info(str(args))
     model.eval()
     all_time = 0
-    data = torch.randn(1,3,args.img_size[0], args.img_size[1]).cuda()
+    data = torch.randn(1, args.channels, args.img_size[0], args.img_size[1]).cuda()
     for i in range(10000):
-        print("{}/{}".format(i+1,10000))
+        print("{}/{}".format(i + 1, 10000))
         start_time = time.time()
         _ = model(data)
         end_time = time.time()
-        all_time += (end_time-start_time)
+        all_time += (end_time - start_time)
     total_time = all_time / 10000
-    fps = 1/total_time
+    fps = 1 / total_time
     logging.info("fps: {}".format(fps))
