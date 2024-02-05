@@ -8,13 +8,13 @@ import sys
 from lib.datasets.dataset_crack import CrackDataset
 from torch.utils.data import DataLoader
 
-from lib.models.ddrnet import ddrnet_23, ddrnet_silm
+from lib.models.ddrnet import ddrnet_silm
 from lib.models.bisenetv1 import BiSeNetV1
 from lib.models.bisenetv2 import BiSeNetV2
 from lib.models.bisenetv1_noarm import BiSeNetV1_noarm
 from lib.models.bisenetv1_noarmglobal import BiSeNetV1_noarmglobal
 from lib.models.bisenetv1_noarm_global2aspp import BiSeNetV1_noarm_global2aspp
-from lib.models.bisenetv1_noarm_global2invertedaspp import BiSeNetV1_noarm_global2invertedaspp
+from lib.models.bisenetv1_noag_CaS import BiSeNetV1_noag_CaS
 
 from torch.nn.modules.loss import CrossEntropyLoss
 from lib.losses.ohem_cross_entropy_loss import OhemCrossEntropyLoss
@@ -24,7 +24,7 @@ from lib.utils.confusion_matrix import ConfusionMatrix
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str,
-                    default='bisenetv1_noarm_global2invertedaspp', help='model name')
+                    default='bisenetv1_noag_cas', help='model name')
 parser.add_argument('--log_path', type=str,
                     default='./run/bisenetv1_noarm_global2invertedaspp_20240202_194744', help='log path')
 parser.add_argument('--checkpoint_type', type=str,
@@ -71,8 +71,8 @@ if __name__ == '__main__':
             model = BiSeNetV1_noarmglobal(args.num_classes)
         elif args.model == 'bisenetv1_noarm_global2aspp':
             model = BiSeNetV1_noarm_global2aspp(args.num_classes)
-        elif args.model == 'bisenetv1_noarm_global2invertedaspp':
-            model = BiSeNetV1_noarm_global2invertedaspp(args.num_classes)
+        elif args.model == 'bisenetv1_noag_cas':
+            model = BiSeNetV1_noag_CaS(args.num_classes)
         else:
             raise KeyError("unknown model: {}".format(args.model))
 

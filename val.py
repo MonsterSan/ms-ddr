@@ -12,7 +12,6 @@ from lib.models.ddrnet import ddrnet_silm
 from lib.models.bisenetv1 import BiSeNetV1
 from lib.models.bisenetv2 import BiSeNetV2
 from lib.models.bisenetv1_noarm import BiSeNetV1_noarm
-from lib.models.bisenetv1_noarm_global2aspp import BiSeNetV1_noarm_global2aspp
 
 from torch.nn.modules.loss import CrossEntropyLoss
 from lib.losses.ohem_cross_entropy_loss import OhemCrossEntropyLoss

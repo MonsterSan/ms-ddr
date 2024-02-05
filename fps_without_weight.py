@@ -11,12 +11,11 @@ from lib.models.bisenetv2 import BiSeNetV2
 from lib.models.bisenetv1_noarm import BiSeNetV1_noarm
 from lib.models.bisenetv1_noarmglobal import BiSeNetV1_noarmglobal
 from lib.models.bisenetv1_noarm_global2aspp import BiSeNetV1_noarm_global2aspp
-from lib.models.bisenetv1_noarm_global2invertedaspp import BiSeNetV1_noarm_global2invertedaspp
-from lib.models.bisenetv1_noarm_global2invertedaspp import InvertedASPP
+from lib.models.bisenetv1_noag_CaS import BiSeNetV1_noag_CaS
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str,
-                    default='invertedaspp', help='model name')
+                    default='bisenetv1_noag_cas', help='model name')
 parser.add_argument('--img_size', type=tuple,
                     default=(512, 512), help='input patch size of network input')
 parser.add_argument('--channels', type=int,
@@ -38,12 +37,10 @@ if __name__ == '__main__':
         model = BiSeNetV1_noarmglobal(args.num_classes)
     elif args.model == 'bisenetv1_noarm_global2aspp':
         model = BiSeNetV1_noarm_global2aspp(args.num_classes)
-    elif args.model == 'bisenetv1_noarm_global2invertedaspp':
-        model = BiSeNetV1_noarm_global2invertedaspp(args.num_classes)
+    elif args.model == 'bisenetv1_noag_cas':
+        model = BiSeNetV1_noag_CaS(args.num_classes)
     elif args.model == 'bisenetv2':
         model = BiSeNetV2(args.num_classes)
-    elif args.model == 'invertedaspp':
-        model = InvertedASPP(512, 128)
     else:
         model = None
         raise KeyError("unknown model: {}".format(args.model))
