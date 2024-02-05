@@ -12,10 +12,11 @@ from lib.models.bisenetv1_noarm import BiSeNetV1_noarm
 from lib.models.bisenetv1_noarmglobal import BiSeNetV1_noarmglobal
 from lib.models.bisenetv1_noarm_global2aspp import BiSeNetV1_noarm_global2aspp
 from lib.models.bisenetv1_noag_CaS import BiSeNetV1_noag_CaS
+from lib.models.bisenetv1_noag_CaSv2_noffm import BiSeNetV1_noag_CaSv2_noffm
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str,
-                    default='bisenetv1_noag_cas', help='model name')
+                    default='bisenetv1', help='model name')
 parser.add_argument('--img_size', type=tuple,
                     default=(512, 512), help='input patch size of network input')
 parser.add_argument('--channels', type=int,
@@ -39,6 +40,8 @@ if __name__ == '__main__':
         model = BiSeNetV1_noarm_global2aspp(args.num_classes)
     elif args.model == 'bisenetv1_noag_cas':
         model = BiSeNetV1_noag_CaS(args.num_classes)
+    elif args.model == 'bisenetv1_noag_casv2_ffm':
+        model = BiSeNetV1_noag_CaSv2_noffm(args.num_classes)
     elif args.model == 'bisenetv2':
         model = BiSeNetV2(args.num_classes)
     else:

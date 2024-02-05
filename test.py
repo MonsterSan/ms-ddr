@@ -16,6 +16,7 @@ from lib.models.bisenetv1_noarmglobal import BiSeNetV1_noarmglobal
 from lib.models.bisenetv1_noarm_global2aspp import BiSeNetV1_noarm_global2aspp
 from lib.models.bisenetv1_noag_CaS import BiSeNetV1_noag_CaS
 from lib.models.bisenetv1_noag_CaSv2 import BiSeNetV1_noag_CaSv2
+from lib.models.bisenetv1_noag_CaSv2_noffm import BiSeNetV1_noag_CaSv2_noffm
 
 from torch.nn.modules.loss import CrossEntropyLoss
 from lib.losses.ohem_cross_entropy_loss import OhemCrossEntropyLoss
@@ -25,9 +26,9 @@ from lib.utils.confusion_matrix import ConfusionMatrix
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str,
-                    default='bisenetv1_noag_casv2', help='model name')
+                    default='bisenetv1_noag_casv2_noffm', help='model name')
 parser.add_argument('--log_path', type=str,
-                    default='./run/bisenetv1_noag_casv2_20240205_155536', help='log path')
+                    default='./run/bisenetv1_noag_casv2_noffm_20240205_180716', help='log path')
 parser.add_argument('--checkpoint_type', type=str,
                     default='best_miou', help="best_miou or last or min_loss")
 # D:\\data\\Crack_Forest_paddle\\Crack_Forest_paddle
@@ -76,6 +77,8 @@ if __name__ == '__main__':
             model = BiSeNetV1_noag_CaS(args.num_classes)
         elif args.model == 'bisenetv1_noag_casv2':
             model = BiSeNetV1_noag_CaSv2(args.num_classes)
+        elif args.model == 'bisenetv1_noag_casv2_noffm':
+            model = BiSeNetV1_noag_CaSv2_noffm(args.num_classes)
         else:
             raise KeyError("unknown model: {}".format(args.model))
 
