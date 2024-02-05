@@ -20,6 +20,7 @@ from lib.models.bisenetv1_noarmglobal import BiSeNetV1_noarmglobal
 from lib.models.bisenetv1_noarm_global2aspp import BiSeNetV1_noarm_global2aspp
 from lib.models.bisenetv1_noag_CaS import BiSeNetV1_noag_CaS
 from lib.models.bisenetv1_noag_CaSv2 import BiSeNetV1_noag_CaSv2
+from lib.models.bisenetv1_noag_CaSv2_noffm import BiSeNetV1_noag_CaSv2_noffm
 
 from torch.optim.lr_scheduler import PolynomialLR
 from torch.nn.modules.loss import CrossEntropyLoss
@@ -33,7 +34,7 @@ from utils.save_weight import save_weights
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str,
-                    default='bisenetv1_noag_casv2', help='model name')
+                    default='bisenetv1_noag_casv2_noffm', help='model name')
 # D:\\data\\Crack_Forest_paddle\\Crack_Forest_paddle
 # /home/user/data/lumianliefeng/Crack_Forest_paddle
 parser.add_argument('--dataset_root', type=str,
@@ -105,6 +106,8 @@ if __name__ == "__main__":
             model = BiSeNetV1_noag_CaS(args.num_classes)
         elif args.model == 'bisenetv1_noag_casv2':
             model = BiSeNetV1_noag_CaSv2(args.num_classes)
+        elif args.model == 'bisenetv1_noag_casv2_noffm':
+            model = BiSeNetV1_noag_CaSv2_noffm(args.num_classes)
         else:
             raise KeyError("unknown model: {}".format(args.model))
 
