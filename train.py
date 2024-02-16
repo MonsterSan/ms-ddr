@@ -104,7 +104,7 @@ if __name__ == "__main__":
             model = BiSeNetV1_noglobal(args.num_classes)
         elif args.model == 'bisenetv1_noarmglobal':
             model = BiSeNetV1_noarmglobal(args.num_classes)
-        elif args.model == 'bisenetv1_ag_attention':
+        elif args.model == 'bisenetv1_noag_attention':
             model = BiSeNetV1_noag_attention(args.num_classes)
         elif args.model == 'bisenetv1_noarmglobal_add':
             model = BiSeNetV1_noarmglobal_add(args.num_classes)
