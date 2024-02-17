@@ -16,16 +16,10 @@ from lib.models.ddrnet import ddrnet_silm
 from lib.models.bisenetv1 import BiSeNetV1
 from lib.models.bisenetv2 import BiSeNetV2
 from lib.models.bisenetv1_noarm import BiSeNetV1_noarm
-from lib.models.bisenetv1_noarmglobal import BiSeNetV1_noarmglobal
-from lib.models.bisenetv1_noarm_global2aspp import BiSeNetV1_noarm_global2aspp
-from lib.models.bisenetv1_noag_CaS import BiSeNetV1_noag_CaS
-from lib.models.bisenetv1_noag_CaSv2 import BiSeNetV1_noag_CaSv2
-from lib.models.bisenetv1_noag_CaSv2_noffm import BiSeNetV1_noag_CaSv2_noffm
-from lib.models.bisenetv1_noag_CaSv2_noffm_SaC import BiSeNetV1_noag_CaSv2_noffm_SaC
 from lib.models.bisenetv1_noglobal import BiSeNetV1_noglobal
-from lib.models.bisenetv1_noarmglobal_add import BiSeNetV1_noarmglobal_add
-from lib.models.bisenetv1_noag_attention import BiSeNetV1_noag_attention
-from lib.models.bisenetv1_noag_taspp import BiSeNetV1_noag_taspp
+from lib.models.bisenetv1_noarmglobal import BiSeNetV1_noarmglobal
+from lib.models.bisenetv1_noarm_global2taspp import BiSeNetV1_noarm_global2taspp
+from lib.models.bisenetv1_noarm_global2aspp import BiSeNetV1_noarm_global2aspp
 
 from torch.optim.lr_scheduler import PolynomialLR
 from torch.nn.modules.loss import CrossEntropyLoss
@@ -39,7 +33,7 @@ from utils.save_weight import save_weights
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str,
-                    default='bisenetv1_noag_taspp', help='model name')
+                    default='bisenetv1_noarm_global2taspp', help='model name')
 # D:\\data\\Crack_Forest_paddle\\Crack_Forest_paddle
 # /home/user/data/lumianliefeng/Crack_Forest_paddle
 parser.add_argument('--dataset_root', type=str,
@@ -105,22 +99,10 @@ if __name__ == "__main__":
             model = BiSeNetV1_noglobal(args.num_classes)
         elif args.model == 'bisenetv1_noarmglobal':
             model = BiSeNetV1_noarmglobal(args.num_classes)
-        elif args.model == 'bisenetv1_noag_taspp':
-            model = BiSeNetV1_noag_taspp(args.num_classes)
-        elif args.model == 'bisenetv1_noag_attention':
-            model = BiSeNetV1_noag_attention(args.num_classes)
-        elif args.model == 'bisenetv1_noarmglobal_add':
-            model = BiSeNetV1_noarmglobal_add(args.num_classes)
         elif args.model == 'bisenetv1_noarm_global2aspp':
             model = BiSeNetV1_noarm_global2aspp(args.num_classes)
-        elif args.model == 'bisenetv1_noag_cas':
-            model = BiSeNetV1_noag_CaS(args.num_classes)
-        elif args.model == 'bisenetv1_noag_casv2':
-            model = BiSeNetV1_noag_CaSv2(args.num_classes)
-        elif args.model == 'bisenetv1_noag_casv2_noffm':
-            model = BiSeNetV1_noag_CaSv2_noffm(args.num_classes)
-        elif args.model == 'bisenetv1_noag_casv2_noffm_sac':
-            model = BiSeNetV1_noag_CaSv2_noffm_SaC(args.num_classes)
+        elif args.model == 'bisenetv1_noarm_global2taspp':
+            model = BiSeNetV1_noarm_global2taspp(args.num_classes)
         else:
             raise KeyError("unknown model: {}".format(args.model))
 

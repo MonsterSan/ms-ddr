@@ -185,9 +185,6 @@ class ContextPath(nn.Module):
 
     def forward(self, x):
         feat8, feat16, feat32 = self.resnet(x)
-        # print("feat8: {}".format(feat8.shape))
-        # print("feat16: {}".format(feat16.shape))
-        #print("feat32: {}".format(feat32.shape))
 
         feat32_aspp = self.aspp(feat32)
 
