@@ -237,46 +237,11 @@ class SpatialPath(nn.Module):
         return wd_params, nowd_params
 
 
-class FeatureFusionModule(nn.Module):
-    def __init__(self, in_chan, out_chan, *args, **kwargs):
-        super(FeatureFusionModule, self).__init__()
-        self.convblk = ConvBNReLU(in_chan, out_chan, ks=1, stride=1, padding=0)
-        ## use conv-bn instead of 2 layer mlp, so that tensorrt 7.2.3.4 can work for fp16
-        self.conv = nn.Conv2d(out_chan,
-                              out_chan,
-                              kernel_size=1,
-                              stride=1,
-                              padding=0,
-                              bias=False)
-        self.bn = nn.BatchNorm2d(out_chan)
-        self.init_weight()
-
-    def forward(self, fsp, fcp):
-        return fsp + fcp
-
-    def init_weight(self):
-        for ly in self.children():
-            if isinstance(ly, nn.Conv2d):
-                nn.init.kaiming_normal_(ly.weight, a=1)
-                if not ly.bias is None: nn.init.constant_(ly.bias, 0)
-
-    def get_params(self):
-        wd_params, nowd_params = [], []
-        for name, module in self.named_modules():
-            if isinstance(module, (nn.Linear, nn.Conv2d)):
-                wd_params.append(module.weight)
-                if not module.bias is None:
-                    nowd_params.append(module.bias)
-            elif isinstance(module, nn.modules.batchnorm._BatchNorm):
-                nowd_params += list(module.parameters())
-        return wd_params, nowd_params
-
-
 class CaS(nn.Module):
     def __init__(self):
         super(CaS, self).__init__()
         self.up = nn.Upsample(scale_factor=2, mode='bilinear', align_corners=False)
-        self.conv = ConvBNReLU(4, 1, ks=1, stride=1, padding=0)
+        #self.conv = nn.Conv2d(1, 1, kernel_size=1, stride=1, padding=0, bias=False)
         self.sigmoid = nn.Sigmoid()
 
     def forward(self, sp8, cp16):
@@ -285,11 +250,12 @@ class CaS(nn.Module):
         cpavg = torch.mean(cp16, dim=1, keepdim=True)
         spmax, _ = torch.max(sp8, dim=1, keepdim=True)
         spavg = torch.mean(sp8, dim=1, keepdim=True)
-
-        attention = torch.cat([cpmax, cpavg, spmax, spavg], dim=1)
-        attention = self.conv(attention)
+        # 2.18 19:57 add conv
+        #attention = self.conv(cpmax + cpavg + spmax + spavg)
+        # 2.18 21:52 restore noconv
+        attention = cpmax + cpavg + spmax + spavg
         attention = self.sigmoid(attention)
-        return sp8 + sp8 * attention
+        return sp8 * attention
 
     def get_params(self):
         wd_params, nowd_params = [], []
@@ -310,7 +276,6 @@ class BiSeNetV1_noarm_global2taspp_ffm2mix(nn.Module):
         self.cp = ContextPath()
         self.sp = SpatialPath()
         self.CaS = CaS()
-        self.ffm = FeatureFusionModule(256, 256)
         self.conv_out = BiSeNetOutput(128, 128, n_classes, up_factor=8)
         self.aux_mode = aux_mode
         if self.aux_mode == 'train':
@@ -323,7 +288,7 @@ class BiSeNetV1_noarm_global2taspp_ffm2mix(nn.Module):
         feat_cp8, feat_cp16 = self.cp(x)
         feat_sp = self.sp(x)
         feat_sp = self.CaS(feat_sp, feat_cp16)
-        feat_fuse = self.ffm(feat_sp, feat_cp8)
+        feat_fuse = feat_sp + feat_cp8
 
         feat_out = self.conv_out(feat_fuse)
         if self.aux_mode == 'train':
@@ -348,7 +313,7 @@ class BiSeNetV1_noarm_global2taspp_ffm2mix(nn.Module):
         wd_params, nowd_params, lr_mul_wd_params, lr_mul_nowd_params = [], [], [], []
         for name, child in self.named_children():
             child_wd_params, child_nowd_params = child.get_params()
-            if isinstance(child, (FeatureFusionModule, BiSeNetOutput)):
+            if isinstance(child, BiSeNetOutput):
                 lr_mul_wd_params += child_wd_params
                 lr_mul_nowd_params += child_nowd_params
             else:
