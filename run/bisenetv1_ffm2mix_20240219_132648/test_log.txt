@@ -1,0 +1,13 @@
+[15:18:10.705] Namespace(model='bisenetv1_ffm2mix', log_path='./run/bisenetv1_ffm2mix_20240219_132648', checkpoint_type='best_miou', dataset_root='/home/user/data/lumianliefeng/Crack_Forest_paddle', img_size=512, num_classes=2, seed=3407)
+[15:18:10.705] test img nums 6212
+[15:18:57.640] 
+losses.avg:0.12527610444401122
+miou:75.70141553878784
+acc_global:98.27414751052856
+aver_row_correct:99.32-64.84
+iou:98.24-53.16
+f1:(69.42030191421509,)
+Rec:(64.83957171440125,)
+Rre:74.69747066497803
+
+[15:18:57.640] test Finished
