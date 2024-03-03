@@ -24,6 +24,7 @@ from lib.models.bisenetv1_noarm_global2taspp_ffm2mix import BiSeNetV1_noarm_glob
 from lib.models.bisenetv1_noarm_global2taspp_ffm2mix_v2 import BiSeNetV1_noarm_global2taspp_ffm2mix_v2
 from lib.models.bisenetv1_ffm2mix import BiSeNetV1_ffm2mix
 from lib.models.crackformer import crackformer
+from lib.models.fcn import FCN
 
 from torch.optim.lr_scheduler import PolynomialLR
 from torch.nn.modules.loss import CrossEntropyLoss
@@ -37,11 +38,12 @@ from utils.save_weight import save_weights
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str,
-                    default='crackformer', help='model name')
+                    default='fcn', help='model name')
 # D:\\data\\Crack_Forest_paddle\\Crack_Forest_paddle
 # /home/user/data/lumianliefeng/Crack_Forest_paddle
+# /home/user/data/liefeng/Crack_paddle_255
 parser.add_argument('--dataset_root', type=str,
-                    default='/home/user/data/liefeng/Crack_paddle_255', help='dataset root directory')
+                    default='/home/user/data/lumianliefeng/Crack_Forest_paddle', help='dataset root directory')
 parser.add_argument('--img_size', type=int,
                     default=512, help='input patch size of network input')
 parser.add_argument('--num_classes', type=int,
@@ -49,7 +51,7 @@ parser.add_argument('--num_classes', type=int,
 parser.add_argument('--max_epochs', type=int,
                     default=30, help='maximum epoch number to train')
 parser.add_argument('--batch_size', type=int,
-                    default=2, help='batch_size per gpu')
+                    default=8, help='batch_size per gpu')
 parser.add_argument('--base_lr', type=float,
                     default=0.01, help='segmentation network learning rate')
 parser.add_argument('--seed', type=int,
@@ -96,6 +98,10 @@ if __name__ == "__main__":
         loss_weights = [1, 1, 1, 1, 1]
     elif args.model == 'crackformer':
         model = crackformer(args.num_classes)
+        losses = [CrossEntropyLoss()]
+        loss_weights = [1]
+    elif args.model == 'fcn':
+        model = FCN(args.num_classes)
         losses = [CrossEntropyLoss()]
         loss_weights = [1]
     elif 'bisenetv1' in args.model:

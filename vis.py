@@ -22,14 +22,11 @@ from lib.models.crackformer import crackformer
 from torch.nn.modules.loss import CrossEntropyLoss
 from lib.losses.ohem_cross_entropy_loss import OhemCrossEntropyLoss
 
-from lib.utils.loss_avg_meter import LossAverageMeter
-from lib.utils.confusion_matrix import ConfusionMatrix
-
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str,
                     default='crackformer', help='model name')
 parser.add_argument('--img_path',type=str,
-                    default="./images/2195.jpg",help='image path')
+                    default="./images/5201.jpg",help='image path')
 parser.add_argument('--log_path', type=str,
                     default='./run/crackformer_20240302_092120', help='log path')
 parser.add_argument('--checkpoint_type', type=str,
