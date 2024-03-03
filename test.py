@@ -18,6 +18,7 @@ from lib.models.bisenetv1_noarm_global2taspp import BiSeNetV1_noarm_global2taspp
 from lib.models.bisenetv1_noarm_global2taspp_ffm2mix import BiSeNetV1_noarm_global2taspp_ffm2mix
 from lib.models.bisenetv1_noarm_global2taspp_ffm2mix_v2 import BiSeNetV1_noarm_global2taspp_ffm2mix_v2
 from lib.models.bisenetv1_ffm2mix import BiSeNetV1_ffm2mix
+from lib.models.crackformer import crackformer
 
 from torch.nn.modules.loss import CrossEntropyLoss
 from lib.losses.ohem_cross_entropy_loss import OhemCrossEntropyLoss
@@ -27,15 +28,16 @@ from lib.utils.confusion_matrix import ConfusionMatrix
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str,
-                    default='bisenetv1_ffm2mix', help='model name')
+                    default='crackformer', help='model name')
 parser.add_argument('--log_path', type=str,
-                    default='./run/bisenetv1_ffm2mix_20240219_132648', help='log path')
+                    default='./run/crackformer_20240302_092120', help='log path')
 parser.add_argument('--checkpoint_type', type=str,
                     default='best_miou', help="best_miou or last or min_loss")
 # D:\\data\\Crack_Forest_paddle\\Crack_Forest_paddle
 # /home/user/data/lumianliefeng/Crack_Forest_paddle
+# /home/user/data/liefeng/Crack_paddle_255
 parser.add_argument('--dataset_root', type=str,
-                    default='/home/user/data/lumianliefeng/Crack_Forest_paddle', help='dataset root directory')
+                    default='/home/user/data/liefeng/Crack_paddle_255', help='dataset root directory')
 parser.add_argument('--img_size', type=int,
                     default=512, help='input patch size of network input')
 parser.add_argument('--num_classes', type=int,
@@ -65,6 +67,10 @@ if __name__ == '__main__':
         model = BiSeNetV2(args.num_classes)
         losses = [CrossEntropyLoss(), CrossEntropyLoss(), CrossEntropyLoss(), CrossEntropyLoss(), CrossEntropyLoss()]
         loss_weights = [1, 1, 1, 1, 1]
+    elif args.model == 'crackformer':
+        model = crackformer(2)
+        losses = [CrossEntropyLoss()]
+        loss_weights = [1]
     elif 'bisenetv1' in args.model:
         if args.model == 'bisenetv1':
             model = BiSeNetV1(args.num_classes)

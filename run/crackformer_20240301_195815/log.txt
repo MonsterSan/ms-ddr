@@ -1,0 +1,149 @@
+[19:58:15.220] Namespace(model='crackformer', dataset_root='/home/user/data/lumianliefeng/Crack_Forest_paddle', img_size=512, num_classes=2, max_epochs=10, batch_size=2, base_lr=0.01, seed=3407, log_path='./run/crackformer_20240301_195815', log_iters=500, eval=True)
+[19:58:15.221] train img nums 12425
+[19:58:15.221] 6212 iterations per epoch. 62120 max iterations 
+[20:03:00.621] [train]iteration 500 / 62120	loss: 0.060208	main_loss:0.060208	current lr:0.009928	remaining time : 585 minutes  52 seconds
+[20:07:45.715] [train]iteration 1000 / 62120	loss: 0.088008	main_loss:0.088008	current lr:0.009855	remaining time : 580 minutes  58 seconds
+[20:12:30.613] [train]iteration 1500 / 62120	loss: 0.122696	main_loss:0.122696	current lr:0.009782	remaining time : 576 minutes  2 seconds
+[20:17:15.412] [train]iteration 2000 / 62120	loss: 0.048269	main_loss:0.048269	current lr:0.009710	remaining time : 571 minutes  9 seconds
+[20:22:00.378] [train]iteration 2500 / 62120	loss: 0.036834	main_loss:0.036834	current lr:0.009637	remaining time : 566 minutes  23 seconds
+[20:26:45.491] [train]iteration 3000 / 62120	loss: 0.032167	main_loss:0.032167	current lr:0.009564	remaining time : 561 minutes  40 seconds
+[20:31:30.702] [train]iteration 3500 / 62120	loss: 0.040729	main_loss:0.040729	current lr:0.009491	remaining time : 556 minutes  58 seconds
+[20:36:15.692] [train]iteration 4000 / 62120	loss: 0.035641	main_loss:0.035641	current lr:0.009419	remaining time : 552 minutes  12 seconds
+[20:41:00.980] [train]iteration 4500 / 62120	loss: 0.030943	main_loss:0.030943	current lr:0.009346	remaining time : 547 minutes  31 seconds
+[20:45:46.218] [train]iteration 5000 / 62120	loss: 0.050345	main_loss:0.050345	current lr:0.009273	remaining time : 542 minutes  47 seconds
+[20:50:31.317] [train]iteration 5500 / 62120	loss: 0.033460	main_loss:0.033460	current lr:0.009200	remaining time : 538 minutes  3 seconds
+[20:55:16.431] [train]iteration 6000 / 62120	loss: 0.027931	main_loss:0.027931	current lr:0.009126	remaining time : 533 minutes  18 seconds
+[20:57:17.375] evaluating
+[20:58:33.036] [ val ]iteration 6212	main_loss : 0.048351, loss: 0.048351	remaining time : 542 minutes  40 seconds
+[21:01:17.927] [train]iteration 6500 / 62120	loss: 0.066695	main_loss:0.066695	current lr:0.009053	remaining time : 539 minutes  26 seconds
+[21:06:03.205] [train]iteration 7000 / 62120	loss: 0.036297	main_loss:0.036297	current lr:0.008980	remaining time : 533 minutes  51 seconds
+[21:10:48.585] [train]iteration 7500 / 62120	loss: 0.041387	main_loss:0.041387	current lr:0.008907	remaining time : 528 minutes  22 seconds
+[21:15:33.899] [train]iteration 8000 / 62120	loss: 0.049883	main_loss:0.049883	current lr:0.008833	remaining time : 522 minutes  59 seconds
+[21:20:19.114] [train]iteration 8500 / 62120	loss: 0.110813	main_loss:0.110813	current lr:0.008760	remaining time : 517 minutes  40 seconds
+[21:25:04.680] [train]iteration 9000 / 62120	loss: 0.039951	main_loss:0.039951	current lr:0.008686	remaining time : 512 minutes  26 seconds
+[21:29:49.890] [train]iteration 9500 / 62120	loss: 0.030692	main_loss:0.030692	current lr:0.008612	remaining time : 507 minutes  13 seconds
+[21:34:35.280] [train]iteration 10000 / 62120	loss: 0.100669	main_loss:0.100669	current lr:0.008539	remaining time : 502 minutes  4 seconds
+[21:39:20.667] [train]iteration 10500 / 62120	loss: 0.050515	main_loss:0.050515	current lr:0.008465	remaining time : 496 minutes  58 seconds
+[21:44:05.926] [train]iteration 11000 / 62120	loss: 0.040292	main_loss:0.040292	current lr:0.008391	remaining time : 491 minutes  52 seconds
+[21:48:50.954] [train]iteration 11500 / 62120	loss: 0.048597	main_loss:0.048597	current lr:0.008317	remaining time : 486 minutes  48 seconds
+[21:53:34.813] [train]iteration 12000 / 62120	loss: 0.062564	main_loss:0.062564	current lr:0.008243	remaining time : 481 minutes  40 seconds
+[21:57:34.172] evaluating
+[21:58:47.791] [ val ]iteration 12424	main_loss : 0.043496, loss: 0.043496	remaining time : 482 minutes  10 seconds
+[21:59:31.628] [train]iteration 12500 / 62120	loss: 0.034366	main_loss:0.034366	current lr:0.008169	remaining time : 481 minutes  23 seconds
+[22:04:15.045] [train]iteration 13000 / 62120	loss: 0.028796	main_loss:0.028796	current lr:0.008095	remaining time : 476 minutes  3 seconds
+[22:08:59.573] [train]iteration 13500 / 62120	loss: 0.026967	main_loss:0.026967	current lr:0.008021	remaining time : 470 minutes  50 seconds
+[22:13:43.213] [train]iteration 14000 / 62120	loss: 0.044207	main_loss:0.044207	current lr:0.007947	remaining time : 465 minutes  36 seconds
+[22:18:23.860] [train]iteration 14500 / 62120	loss: 0.029220	main_loss:0.029220	current lr:0.007872	remaining time : 460 minutes  14 seconds
+[22:23:09.007] [train]iteration 15000 / 62120	loss: 0.035040	main_loss:0.035040	current lr:0.007798	remaining time : 455 minutes  9 seconds
+[22:27:54.332] [train]iteration 15500 / 62120	loss: 0.030934	main_loss:0.030934	current lr:0.007723	remaining time : 450 minutes  6 seconds
+[22:32:39.957] [train]iteration 16000 / 62120	loss: 0.044955	main_loss:0.044955	current lr:0.007649	remaining time : 445 minutes  5 seconds
+[22:37:24.996] [train]iteration 16500 / 62120	loss: 0.026210	main_loss:0.026210	current lr:0.007574	remaining time : 440 minutes  3 seconds
+[22:42:10.426] [train]iteration 17000 / 62120	loss: 0.055909	main_loss:0.055909	current lr:0.007499	remaining time : 435 minutes  3 seconds
+[22:46:55.774] [train]iteration 17500 / 62120	loss: 0.032781	main_loss:0.032781	current lr:0.007425	remaining time : 430 minutes  4 seconds
+[22:51:41.169] [train]iteration 18000 / 62120	loss: 0.031702	main_loss:0.031702	current lr:0.007350	remaining time : 425 minutes  5 seconds
+[22:56:25.727] [train]iteration 18500 / 62120	loss: 0.062555	main_loss:0.062555	current lr:0.007275	remaining time : 420 minutes  6 seconds
+[22:57:43.398] evaluating
+[22:58:58.875] [ val ]iteration 18636	main_loss : 0.041561, loss: 0.041561	remaining time : 421 minutes  41 seconds
+[23:02:26.809] [train]iteration 19000 / 62120	loss: 0.031097	main_loss:0.031097	current lr:0.007200	remaining time : 418 minutes  0 seconds
+[23:07:11.233] [train]iteration 19500 / 62120	loss: 0.021913	main_loss:0.021913	current lr:0.007124	remaining time : 412 minutes  56 seconds
+[23:11:54.091] [train]iteration 20000 / 62120	loss: 0.051489	main_loss:0.051489	current lr:0.007049	remaining time : 407 minutes  49 seconds
+[23:16:37.513] [train]iteration 20500 / 62120	loss: 0.031217	main_loss:0.031217	current lr:0.006974	remaining time : 402 minutes  44 seconds
+[23:21:20.786] [train]iteration 21000 / 62120	loss: 0.045371	main_loss:0.045371	current lr:0.006898	remaining time : 397 minutes  40 seconds
+[23:26:03.266] [train]iteration 21500 / 62120	loss: 0.149817	main_loss:0.149817	current lr:0.006823	remaining time : 392 minutes  35 seconds
+[23:30:46.931] [train]iteration 22000 / 62120	loss: 0.031998	main_loss:0.031998	current lr:0.006747	remaining time : 387 minutes  34 seconds
+[23:35:29.225] [train]iteration 22500 / 62120	loss: 0.035420	main_loss:0.035420	current lr:0.006671	remaining time : 382 minutes  31 seconds
+[23:40:12.150] [train]iteration 23000 / 62120	loss: 0.046248	main_loss:0.046248	current lr:0.006596	remaining time : 377 minutes  30 seconds
+[23:44:55.157] [train]iteration 23500 / 62120	loss: 0.134425	main_loss:0.134425	current lr:0.006520	remaining time : 372 minutes  29 seconds
+[23:49:38.979] [train]iteration 24000 / 62120	loss: 0.033560	main_loss:0.033560	current lr:0.006444	remaining time : 367 minutes  31 seconds
+[23:54:20.848] [train]iteration 24500 / 62120	loss: 0.064091	main_loss:0.064091	current lr:0.006367	remaining time : 362 minutes  31 seconds
+[23:57:37.791] evaluating
+[23:58:50.911] [ val ]iteration 24848	main_loss : 0.040022, loss: 0.040022	remaining time : 360 minutes  53 seconds
+[00:00:17.069] [train]iteration 25000 / 62120	loss: 0.031012	main_loss:0.031012	current lr:0.006291	remaining time : 359 minutes  21 seconds
+[00:05:00.176] [train]iteration 25500 / 62120	loss: 0.040500	main_loss:0.040500	current lr:0.006215	remaining time : 354 minutes  20 seconds
+[00:09:42.127] [train]iteration 26000 / 62120	loss: 0.022080	main_loss:0.022080	current lr:0.006139	remaining time : 349 minutes  18 seconds
+[00:14:23.865] [train]iteration 26500 / 62120	loss: 0.050188	main_loss:0.050188	current lr:0.006062	remaining time : 344 minutes  17 seconds
+[00:19:07.014] [train]iteration 27000 / 62120	loss: 0.021232	main_loss:0.021232	current lr:0.005985	remaining time : 339 minutes  18 seconds
+[00:23:50.318] [train]iteration 27500 / 62120	loss: 0.038307	main_loss:0.038307	current lr:0.005909	remaining time : 334 minutes  20 seconds
+[00:28:33.597] [train]iteration 28000 / 62120	loss: 0.035860	main_loss:0.035860	current lr:0.005832	remaining time : 329 minutes  23 seconds
+[00:33:16.941] [train]iteration 28500 / 62120	loss: 0.036350	main_loss:0.036350	current lr:0.005755	remaining time : 324 minutes  26 seconds
+[00:37:58.571] [train]iteration 29000 / 62120	loss: 0.081299	main_loss:0.081299	current lr:0.005678	remaining time : 319 minutes  27 seconds
+[00:42:39.607] [train]iteration 29500 / 62120	loss: 0.028274	main_loss:0.028274	current lr:0.005601	remaining time : 314 minutes  28 seconds
+[00:47:22.411] [train]iteration 30000 / 62120	loss: 0.030835	main_loss:0.030835	current lr:0.005523	remaining time : 309 minutes  32 seconds
+[00:52:06.923] [train]iteration 30500 / 62120	loss: 0.026493	main_loss:0.026493	current lr:0.005446	remaining time : 304 minutes  38 seconds
+[00:56:48.965] [train]iteration 31000 / 62120	loss: 0.033985	main_loss:0.033985	current lr:0.005368	remaining time : 299 minutes  42 seconds
+[00:57:23.206] evaluating
+[00:58:36.804] [ val ]iteration 31060	main_loss : 0.039099, loss: 0.039099	remaining time : 300 minutes  21 seconds
+[01:02:45.599] [train]iteration 31500 / 62120	loss: 0.031217	main_loss:0.031217	current lr:0.005290	remaining time : 295 minutes  59 seconds
+[01:07:29.101] [train]iteration 32000 / 62120	loss: 0.033757	main_loss:0.033757	current lr:0.005213	remaining time : 291 minutes  3 seconds
+[01:12:13.088] [train]iteration 32500 / 62120	loss: 0.027368	main_loss:0.027368	current lr:0.005135	remaining time : 286 minutes  8 seconds
+[01:16:54.934] [train]iteration 33000 / 62120	loss: 0.027374	main_loss:0.027374	current lr:0.005057	remaining time : 281 minutes  11 seconds
+[01:21:36.133] [train]iteration 33500 / 62120	loss: 0.047123	main_loss:0.047123	current lr:0.004978	remaining time : 276 minutes  14 seconds
+[01:26:18.421] [train]iteration 34000 / 62120	loss: 0.031037	main_loss:0.031037	current lr:0.004900	remaining time : 271 minutes  19 seconds
+[01:31:01.182] [train]iteration 34500 / 62120	loss: 0.038868	main_loss:0.038868	current lr:0.004822	remaining time : 266 minutes  24 seconds
+[01:35:44.585] [train]iteration 35000 / 62120	loss: 0.049986	main_loss:0.049986	current lr:0.004743	remaining time : 261 minutes  30 seconds
+[01:40:28.165] [train]iteration 35500 / 62120	loss: 0.073005	main_loss:0.073005	current lr:0.004664	remaining time : 256 minutes  36 seconds
+[01:45:11.419] [train]iteration 36000 / 62120	loss: 0.032928	main_loss:0.032928	current lr:0.004585	remaining time : 251 minutes  43 seconds
+[01:49:54.417] [train]iteration 36500 / 62120	loss: 0.024250	main_loss:0.024250	current lr:0.004506	remaining time : 246 minutes  49 seconds
+[01:54:37.497] [train]iteration 37000 / 62120	loss: 0.029804	main_loss:0.029804	current lr:0.004427	remaining time : 241 minutes  56 seconds
+[01:57:11.901] evaluating
+[01:58:24.733] [ val ]iteration 37272	main_loss : 0.038361, loss: 0.038361	remaining time : 240 minutes  6 seconds
+[02:00:34.564] [train]iteration 37500 / 62120	loss: 0.030591	main_loss:0.030591	current lr:0.004348	remaining time : 237 minutes  52 seconds
+[02:05:15.656] [train]iteration 38000 / 62120	loss: 0.062658	main_loss:0.062658	current lr:0.004268	remaining time : 232 minutes  57 seconds
+[02:09:59.790] [train]iteration 38500 / 62120	loss: 0.068583	main_loss:0.068583	current lr:0.004188	remaining time : 228 minutes  3 seconds
+[02:14:43.244] [train]iteration 39000 / 62120	loss: 0.045295	main_loss:0.045295	current lr:0.004108	remaining time : 223 minutes  10 seconds
+[02:19:26.322] [train]iteration 39500 / 62120	loss: 0.034723	main_loss:0.034723	current lr:0.004028	remaining time : 218 minutes  17 seconds
+[02:24:08.471] [train]iteration 40000 / 62120	loss: 0.042594	main_loss:0.042594	current lr:0.003948	remaining time : 213 minutes  23 seconds
+[02:28:51.844] [train]iteration 40500 / 62120	loss: 0.045919	main_loss:0.045919	current lr:0.003868	remaining time : 208 minutes  31 seconds
+[02:33:34.847] [train]iteration 41000 / 62120	loss: 0.019140	main_loss:0.019140	current lr:0.003787	remaining time : 203 minutes  38 seconds
+[02:38:16.782] [train]iteration 41500 / 62120	loss: 0.067179	main_loss:0.067179	current lr:0.003706	remaining time : 198 minutes  45 seconds
+[02:42:59.272] [train]iteration 42000 / 62120	loss: 0.035115	main_loss:0.035115	current lr:0.003625	remaining time : 193 minutes  53 seconds
+[02:47:41.951] [train]iteration 42500 / 62120	loss: 0.031867	main_loss:0.031867	current lr:0.003544	remaining time : 189 minutes  1 seconds
+[02:52:25.406] [train]iteration 43000 / 62120	loss: 0.049437	main_loss:0.049437	current lr:0.003463	remaining time : 184 minutes  9 seconds
+[02:56:59.149] evaluating
+[02:58:12.464] [ val ]iteration 43484	main_loss : 0.038082, loss: 0.038082	remaining time : 179 minutes  58 seconds
+[02:58:21.907] [train]iteration 43500 / 62120	loss: 0.046951	main_loss:0.046951	current lr:0.003381	remaining time : 179 minutes  49 seconds
+[03:03:04.655] [train]iteration 44000 / 62120	loss: 0.041500	main_loss:0.041500	current lr:0.003299	remaining time : 174 minutes  56 seconds
+[03:07:47.116] [train]iteration 44500 / 62120	loss: 0.039610	main_loss:0.039610	current lr:0.003217	remaining time : 170 minutes  4 seconds
+[03:12:28.964] [train]iteration 45000 / 62120	loss: 0.037347	main_loss:0.037347	current lr:0.003135	remaining time : 165 minutes  11 seconds
+[03:17:11.515] [train]iteration 45500 / 62120	loss: 0.040143	main_loss:0.040143	current lr:0.003053	remaining time : 160 minutes  19 seconds
+[03:21:55.621] [train]iteration 46000 / 62120	loss: 0.027934	main_loss:0.027934	current lr:0.002970	remaining time : 155 minutes  28 seconds
+[03:26:38.587] [train]iteration 46500 / 62120	loss: 0.043318	main_loss:0.043318	current lr:0.002887	remaining time : 150 minutes  37 seconds
+[03:31:20.538] [train]iteration 47000 / 62120	loss: 0.054289	main_loss:0.054289	current lr:0.002803	remaining time : 145 minutes  45 seconds
+[03:36:02.638] [train]iteration 47500 / 62120	loss: 0.066533	main_loss:0.066533	current lr:0.002720	remaining time : 140 minutes  54 seconds
+[03:40:45.752] [train]iteration 48000 / 62120	loss: 0.051557	main_loss:0.051557	current lr:0.002636	remaining time : 136 minutes  3 seconds
+[03:45:27.916] [train]iteration 48500 / 62120	loss: 0.021961	main_loss:0.021961	current lr:0.002552	remaining time : 131 minutes  12 seconds
+[03:50:11.513] [train]iteration 49000 / 62120	loss: 0.042424	main_loss:0.042424	current lr:0.002467	remaining time : 126 minutes  21 seconds
+[03:54:55.167] [train]iteration 49500 / 62120	loss: 0.044540	main_loss:0.044540	current lr:0.002383	remaining time : 121 minutes  31 seconds
+[03:56:45.799] evaluating
+[03:57:58.121] [ val ]iteration 49696	main_loss : 0.037568, loss: 0.037568	remaining time : 119 minutes  55 seconds
+[04:00:50.792] [train]iteration 50000 / 62120	loss: 0.062782	main_loss:0.062782	current lr:0.002297	remaining time : 116 minutes  58 seconds
+[04:05:32.367] [train]iteration 50500 / 62120	loss: 0.018205	main_loss:0.018205	current lr:0.002212	remaining time : 112 minutes  7 seconds
+[04:10:15.071] [train]iteration 51000 / 62120	loss: 0.034676	main_loss:0.034676	current lr:0.002126	remaining time : 107 minutes  16 seconds
+[04:14:59.231] [train]iteration 51500 / 62120	loss: 0.044204	main_loss:0.044204	current lr:0.002040	remaining time : 102 minutes  25 seconds
+[04:19:41.940] [train]iteration 52000 / 62120	loss: 0.073438	main_loss:0.073438	current lr:0.001953	remaining time : 97 minutes  35 seconds
+[04:24:23.794] [train]iteration 52500 / 62120	loss: 0.031771	main_loss:0.031771	current lr:0.001866	remaining time : 92 minutes  44 seconds
+[04:29:07.047] [train]iteration 53000 / 62120	loss: 0.041390	main_loss:0.041390	current lr:0.001779	remaining time : 87 minutes  54 seconds
+[04:33:49.202] [train]iteration 53500 / 62120	loss: 0.099493	main_loss:0.099493	current lr:0.001691	remaining time : 83 minutes  4 seconds
+[04:38:31.914] [train]iteration 54000 / 62120	loss: 0.036672	main_loss:0.036672	current lr:0.001602	remaining time : 78 minutes  14 seconds
+[04:43:15.307] [train]iteration 54500 / 62120	loss: 0.037584	main_loss:0.037584	current lr:0.001513	remaining time : 73 minutes  24 seconds
+[04:47:57.290] [train]iteration 55000 / 62120	loss: 0.073370	main_loss:0.073370	current lr:0.001423	remaining time : 68 minutes  34 seconds
+[04:52:40.076] [train]iteration 55500 / 62120	loss: 0.023217	main_loss:0.023217	current lr:0.001333	remaining time : 63 minutes  44 seconds
+[04:56:30.868] evaluating
+[04:57:43.895] [ val ]iteration 55908	main_loss : 0.036889, loss: 0.036889	remaining time : 59 minutes  56 seconds
+[04:58:35.880] [train]iteration 56000 / 62120	loss: 0.019983	main_loss:0.019983	current lr:0.001242	remaining time : 59 minutes  3 seconds
+[05:03:19.555] [train]iteration 56500 / 62120	loss: 0.032644	main_loss:0.032644	current lr:0.001150	remaining time : 54 minutes  13 seconds
+[05:08:02.153] [train]iteration 57000 / 62120	loss: 0.021778	main_loss:0.021778	current lr:0.001058	remaining time : 49 minutes  23 seconds
+[05:12:45.315] [train]iteration 57500 / 62120	loss: 0.019369	main_loss:0.019369	current lr:0.000964	remaining time : 44 minutes  33 seconds
+[05:17:27.543] [train]iteration 58000 / 62120	loss: 0.033523	main_loss:0.033523	current lr:0.000870	remaining time : 39 minutes  43 seconds
+[05:22:10.964] [train]iteration 58500 / 62120	loss: 0.024087	main_loss:0.024087	current lr:0.000774	remaining time : 34 minutes  53 seconds
+[05:26:53.023] [train]iteration 59000 / 62120	loss: 0.034938	main_loss:0.034938	current lr:0.000677	remaining time : 30 minutes  4 seconds
+[05:31:37.814] [train]iteration 59500 / 62120	loss: 0.037803	main_loss:0.037803	current lr:0.000579	remaining time : 25 minutes  14 seconds
+[05:36:21.102] [train]iteration 60000 / 62120	loss: 0.069569	main_loss:0.069569	current lr:0.000478	remaining time : 20 minutes  25 seconds
+[05:41:03.510] [train]iteration 60500 / 62120	loss: 0.042162	main_loss:0.042162	current lr:0.000376	remaining time : 15 minutes  36 seconds
+[05:45:47.825] [train]iteration 61000 / 62120	loss: 0.066114	main_loss:0.066114	current lr:0.000269	remaining time : 10 minutes  47 seconds
+[05:50:30.978] [train]iteration 61500 / 62120	loss: 0.037719	main_loss:0.037719	current lr:0.000158	remaining time : 5 minutes  58 seconds
+[05:55:14.695] [train]iteration 62000 / 62120	loss: 0.046018	main_loss:0.046018	current lr:0.000036	remaining time : 1 minutes  9 seconds
+[05:56:23.149] evaluating
+[05:57:35.881] [ val ]iteration 62120	main_loss : 0.036566, loss: 0.036566	remaining time : 0 minutes  0 seconds
+[05:57:35.968] Training Started at 20240301_195815
+[05:57:35.968] Training Finished at 20240302_055735

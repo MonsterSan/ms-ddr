@@ -41,7 +41,7 @@ parser.add_argument('--model', type=str,
 # D:\\data\\Crack_Forest_paddle\\Crack_Forest_paddle
 # /home/user/data/lumianliefeng/Crack_Forest_paddle
 parser.add_argument('--dataset_root', type=str,
-                    default='/home/user/data/lumianliefeng/Crack_Forest_paddle', help='dataset root directory')
+                    default='/home/user/data/liefeng/Crack_paddle_255', help='dataset root directory')
 parser.add_argument('--img_size', type=int,
                     default=512, help='input patch size of network input')
 parser.add_argument('--num_classes', type=int,
@@ -49,7 +49,7 @@ parser.add_argument('--num_classes', type=int,
 parser.add_argument('--max_epochs', type=int,
                     default=30, help='maximum epoch number to train')
 parser.add_argument('--batch_size', type=int,
-                    default=4, help='batch_size per gpu')
+                    default=2, help='batch_size per gpu')
 parser.add_argument('--base_lr', type=float,
                     default=0.01, help='segmentation network learning rate')
 parser.add_argument('--seed', type=int,
