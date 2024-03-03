@@ -1,0 +1,2 @@
+[15:57:36.550] Namespace(model='crackformer', img_path='./images/2195.jpg', log_path='./run/crackformer_20240302_092120', checkpoint_type='best_miou', img_size=512, num_classes=2, seed=3407)
+[15:57:37.144] vis Finished
