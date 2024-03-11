@@ -9,7 +9,6 @@ from lib.models.ddrnet import ddrnet_23, ddrnet_silm
 from lib.models.bisenetv1 import BiSeNetV1
 from lib.models.bisenetv2 import BiSeNetV2
 from lib.models.bisenetv1_noarm import BiSeNetV1_noarm
-from lib.models.bisenetv1_noarm_global2invertedaspp import BiSeNetV1_noarm_global2invertedaspp
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str,

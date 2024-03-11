@@ -41,8 +41,6 @@ class AFF(nn.Module):
         self.sigmoid = nn.Sigmoid()
 
     def forward(self, x, residual):
-        print(x.shape)
-        print(residual.shape)
         xa = x + residual
         xl = self.local_att(xa)
         xg = self.global_att(xa)
@@ -312,7 +310,6 @@ class BiSeNetV1_noarm_global2taspp_ffm2aff(nn.Module):
         # 16 128 64 64
         # feat_fuse = self.ffm(feat_sp, feat_cp8)
         feat_fuse = self.aff(feat_cp8, feat_sp)
-        print(feat_fuse.shape)
         feat_out = self.conv_out(feat_fuse)
         if self.aux_mode == 'train':
             feat_out16 = self.conv_out16(feat_cp8)

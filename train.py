@@ -20,8 +20,6 @@ from lib.models.bisenetv1_noglobal import BiSeNetV1_noglobal
 from lib.models.bisenetv1_noarmglobal import BiSeNetV1_noarmglobal
 from lib.models.bisenetv1_noarm_global2taspp import BiSeNetV1_noarm_global2taspp
 from lib.models.bisenetv1_noarm_global2aspp import BiSeNetV1_noarm_global2aspp
-from lib.models.bisenetv1_noarm_global2taspp_ffm2mix import BiSeNetV1_noarm_global2taspp_ffm2mix
-from lib.models.bisenetv1_noarm_global2taspp_ffm2mix_v2 import BiSeNetV1_noarm_global2taspp_ffm2mix_v2
 from lib.models.bisenetv1_ffm2mix import BiSeNetV1_ffm2mix
 from lib.models.bisenetv1_noarm_global2taspp_ffm2aff import BiSeNetV1_noarm_global2taspp_ffm2aff
 
@@ -110,10 +108,6 @@ if __name__ == "__main__":
             model = BiSeNetV1_noarm_global2aspp(args.num_classes)
         elif args.model == 'bisenetv1_noarm_global2taspp':
             model = BiSeNetV1_noarm_global2taspp(args.num_classes)
-        elif args.model == 'bisenetv1_noarm_global2taspp_ffm2mix':
-            model = BiSeNetV1_noarm_global2taspp_ffm2mix(args.num_classes)
-        elif args.model == 'bisenetv1_noarm_global2taspp_ffm2mix_v2':
-            model = BiSeNetV1_noarm_global2taspp_ffm2mix_v2(args.num_classes)
         elif args.model == 'bisenetv1_noarm_global2taspp_ffm2aff':
             model = BiSeNetV1_noarm_global2taspp_ffm2aff(args.num_classes)
         else:

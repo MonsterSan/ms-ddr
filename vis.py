@@ -14,8 +14,6 @@ from lib.models.bisenetv1_noarm import BiSeNetV1_noarm
 from lib.models.bisenetv1_noarmglobal import BiSeNetV1_noarmglobal
 from lib.models.bisenetv1_noarm_global2aspp import BiSeNetV1_noarm_global2aspp
 from lib.models.bisenetv1_noarm_global2taspp import BiSeNetV1_noarm_global2taspp
-from lib.models.bisenetv1_noarm_global2taspp_ffm2mix import BiSeNetV1_noarm_global2taspp_ffm2mix
-from lib.models.bisenetv1_noarm_global2taspp_ffm2mix_v2 import BiSeNetV1_noarm_global2taspp_ffm2mix_v2
 from lib.models.bisenetv1_ffm2mix import BiSeNetV1_ffm2mix
 
 from torch.nn.modules.loss import CrossEntropyLoss

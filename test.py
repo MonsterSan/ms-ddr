@@ -15,9 +15,8 @@ from lib.models.bisenetv1_noarm import BiSeNetV1_noarm
 from lib.models.bisenetv1_noarmglobal import BiSeNetV1_noarmglobal
 from lib.models.bisenetv1_noarm_global2aspp import BiSeNetV1_noarm_global2aspp
 from lib.models.bisenetv1_noarm_global2taspp import BiSeNetV1_noarm_global2taspp
-from lib.models.bisenetv1_noarm_global2taspp_ffm2mix import BiSeNetV1_noarm_global2taspp_ffm2mix
-from lib.models.bisenetv1_noarm_global2taspp_ffm2mix_v2 import BiSeNetV1_noarm_global2taspp_ffm2mix_v2
 from lib.models.bisenetv1_ffm2mix import BiSeNetV1_ffm2mix
+from lib.models.bisenetv1_noarm_global2taspp_ffm2aff import BiSeNetV1_noarm_global2taspp_ffm2aff
 
 from torch.nn.modules.loss import CrossEntropyLoss
 from lib.losses.ohem_cross_entropy_loss import OhemCrossEntropyLoss
@@ -27,16 +26,16 @@ from lib.utils.confusion_matrix import ConfusionMatrix
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str,
-                    default='crackformer', help='model name')
+                    default='bisenetv1_noarm_global2taspp_ffm2aff', help='model name')
 parser.add_argument('--log_path', type=str,
-                    default='./run/crackformer_20240302_092120', help='log path')
+                    default='./run/bisenetv1_noarm_global2taspp_ffm2aff_20240311_192051', help='log path')
 parser.add_argument('--checkpoint_type', type=str,
                     default='best_miou', help="best_miou or last or min_loss")
 # D:\\data\\Crack_Forest_paddle\\Crack_Forest_paddle
 # /home/user/data/lumianliefeng/Crack_Forest_paddle
 # /home/user/data/liefeng/Crack_paddle_255
 parser.add_argument('--dataset_root', type=str,
-                    default='/home/user/data/liefeng/Crack_paddle_255', help='dataset root directory')
+                    default='/home/user/data/lumianliefeng/Crack_Forest_paddle', help='dataset root directory')
 parser.add_argument('--img_size', type=int,
                     default=512, help='input patch size of network input')
 parser.add_argument('--num_classes', type=int,
@@ -77,12 +76,10 @@ if __name__ == '__main__':
             model = BiSeNetV1_noarmglobal(args.num_classes)
         elif args.model == 'bisenetv1_noarm_global2taspp':
             model = BiSeNetV1_noarm_global2taspp(args.num_classes)
-        elif args.model == 'bisenetv1_noarm_global2taspp_ffm2mix':
-            model = BiSeNetV1_noarm_global2taspp_ffm2mix(args.num_classes)
-        elif args.model == 'bisenetv1_noarm_global2taspp_ffm2mix_v2':
-            model = BiSeNetV1_noarm_global2taspp_ffm2mix_v2(args.num_classes)
         elif args.model == 'bisenetv1_noarm_global2aspp':
             model = BiSeNetV1_noarm_global2aspp(args.num_classes)
+        elif args.model == 'bisenetv1_noarm_global2taspp_ffm2aff':
+            model = BiSeNetV1_noarm_global2taspp_ffm2aff(args.num_classes)
         else:
             raise KeyError("unknown model: {}".format(args.model))
 
