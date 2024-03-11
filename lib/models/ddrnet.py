@@ -1,10 +1,6 @@
-import math
 import torch
-import numpy as np
 import torch.nn as nn
 import torch.nn.functional as F
-from torch.nn import init
-from collections import OrderedDict
 
 BatchNorm2d = nn.BatchNorm2d
 bn_mom = 0.1

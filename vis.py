@@ -17,7 +17,6 @@ from lib.models.bisenetv1_noarm_global2taspp import BiSeNetV1_noarm_global2taspp
 from lib.models.bisenetv1_noarm_global2taspp_ffm2mix import BiSeNetV1_noarm_global2taspp_ffm2mix
 from lib.models.bisenetv1_noarm_global2taspp_ffm2mix_v2 import BiSeNetV1_noarm_global2taspp_ffm2mix_v2
 from lib.models.bisenetv1_ffm2mix import BiSeNetV1_ffm2mix
-from lib.models.crackformer import crackformer
 
 from torch.nn.modules.loss import CrossEntropyLoss
 from lib.losses.ohem_cross_entropy_loss import OhemCrossEntropyLoss
@@ -54,10 +53,6 @@ if __name__ == '__main__':
         model = BiSeNetV2(args.num_classes)
         losses = [CrossEntropyLoss(), CrossEntropyLoss(), CrossEntropyLoss(), CrossEntropyLoss(), CrossEntropyLoss()]
         loss_weights = [1, 1, 1, 1, 1]
-    elif args.model == 'crackformer':
-        model = crackformer(2)
-        losses = [CrossEntropyLoss()]
-        loss_weights = [1]
     elif 'bisenetv1' in args.model:
         if args.model == 'bisenetv1':
             model = BiSeNetV1(args.num_classes)

@@ -23,8 +23,7 @@ from lib.models.bisenetv1_noarm_global2aspp import BiSeNetV1_noarm_global2aspp
 from lib.models.bisenetv1_noarm_global2taspp_ffm2mix import BiSeNetV1_noarm_global2taspp_ffm2mix
 from lib.models.bisenetv1_noarm_global2taspp_ffm2mix_v2 import BiSeNetV1_noarm_global2taspp_ffm2mix_v2
 from lib.models.bisenetv1_ffm2mix import BiSeNetV1_ffm2mix
-from lib.models.crackformer import crackformer
-from lib.models.fcn import FCN
+from lib.models.bisenetv1_noarm_global2taspp_ffm2aff import BiSeNetV1_noarm_global2taspp_ffm2aff
 
 from torch.optim.lr_scheduler import PolynomialLR
 from torch.nn.modules.loss import CrossEntropyLoss
@@ -38,7 +37,7 @@ from utils.save_weight import save_weights
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str,
-                    default='fcn', help='model name')
+                    default='bisenetv1_noarm_global2taspp_ffm2aff', help='model name')
 # D:\\data\\Crack_Forest_paddle\\Crack_Forest_paddle
 # /home/user/data/lumianliefeng/Crack_Forest_paddle
 # /home/user/data/liefeng/Crack_paddle_255
@@ -49,7 +48,7 @@ parser.add_argument('--img_size', type=int,
 parser.add_argument('--num_classes', type=int,
                     default=2, help='output channel of network')
 parser.add_argument('--max_epochs', type=int,
-                    default=30, help='maximum epoch number to train')
+                    default=100, help='maximum epoch number to train')
 parser.add_argument('--batch_size', type=int,
                     default=8, help='batch_size per gpu')
 parser.add_argument('--base_lr', type=float,
@@ -96,14 +95,6 @@ if __name__ == "__main__":
         model = BiSeNetV2(args.num_classes)
         losses = [CrossEntropyLoss(), CrossEntropyLoss(), CrossEntropyLoss(), CrossEntropyLoss(), CrossEntropyLoss()]
         loss_weights = [1, 1, 1, 1, 1]
-    elif args.model == 'crackformer':
-        model = crackformer(args.num_classes)
-        losses = [CrossEntropyLoss()]
-        loss_weights = [1]
-    elif args.model == 'fcn':
-        model = FCN(args.num_classes)
-        losses = [CrossEntropyLoss()]
-        loss_weights = [1]
     elif 'bisenetv1' in args.model:
         if args.model == 'bisenetv1':
             model = BiSeNetV1(args.num_classes)
@@ -123,6 +114,8 @@ if __name__ == "__main__":
             model = BiSeNetV1_noarm_global2taspp_ffm2mix(args.num_classes)
         elif args.model == 'bisenetv1_noarm_global2taspp_ffm2mix_v2':
             model = BiSeNetV1_noarm_global2taspp_ffm2mix_v2(args.num_classes)
+        elif args.model == 'bisenetv1_noarm_global2taspp_ffm2aff':
+            model = BiSeNetV1_noarm_global2taspp_ffm2aff(args.num_classes)
         else:
             raise KeyError("unknown model: {}".format(args.model))
 
