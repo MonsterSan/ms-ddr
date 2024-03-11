@@ -1,8 +1,0 @@
-[21:34:49.858] Namespace(model='ddrnet', log_path='./run/ddrnet_20240109_174157', checkpoint_type='best_miou', img_size=512, num_classes=2)
-[21:35:35.055] fps: 222.01826441623302
-[01:15:54.374] Namespace(model='ddrnet_silm', log_path='./run/ddrnet_silm_20240109_174157', checkpoint_type='best_miou', img_size=(2048, 1024), num_classes=2)
-[01:16:31.965] fps: 267.0455730920953
-[01:18:30.050] Namespace(model='ddrnet_silm', log_path='./run/ddrnet_silm_20240109_174157', checkpoint_type='best_miou', img_size=(2048, 1024), num_classes=2)
-[01:19:08.574] fps: 260.5819366945731
-[01:29:12.844] Namespace(model='ddrnet_silm', log_path='./run/ddrnet_silm_20240109_174157', checkpoint_type='best_miou', img_size=(512, 512), num_classes=2)
-[01:29:53.067] fps: 249.32071123297123
