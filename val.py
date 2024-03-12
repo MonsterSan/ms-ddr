@@ -11,7 +11,6 @@ from torch.utils.data import DataLoader
 from lib.models.ddrnet import ddrnet_silm
 from lib.models.bisenetv1 import BiSeNetV1
 from lib.models.bisenetv2 import BiSeNetV2
-from lib.models.bisenetv1_noarm import BiSeNetV1_noarm
 
 from torch.nn.modules.loss import CrossEntropyLoss
 from lib.losses.ohem_cross_entropy_loss import OhemCrossEntropyLoss

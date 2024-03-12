@@ -15,6 +15,7 @@ from lib.models.bisenetv1_noarm_global2aspp import BiSeNetV1_noarm_global2aspp
 from lib.models.bisenetv1_noarm_global2taspp import BiSeNetV1_noarm_global2taspp
 from lib.models.bisenetv1_noarm_global2taspp_ffm2aff import BiSeNetV1_noarm_global2taspp_ffm2aff
 from lib.models.bisenetv1_noarm_global2taspp_ffmnoatten import BiSeNetV1_noarm_global2taspp_ffmnoatten
+from lib.models.bisenetv1_noarm_global2taspp_ffm2affconv import BiSeNetV1_noarm_global2taspp_ffm2affconv
 
 from torch.nn.modules.loss import CrossEntropyLoss
 from lib.losses.ohem_cross_entropy_loss import OhemCrossEntropyLoss

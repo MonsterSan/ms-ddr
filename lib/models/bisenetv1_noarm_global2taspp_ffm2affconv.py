@@ -11,56 +11,7 @@ from lib.models.resnet import Resnet18
 
 from torch.nn import BatchNorm2d
 
-class AFF(nn.Module):
-    '''
-    多特征融合 AFF
-    '''
 
-    def __init__(self, channels=64, r=4):
-        super(AFF, self).__init__()
-        inter_channels = int(channels // r)
-
-        self.local_att = nn.Sequential(
-            nn.Conv2d(channels, inter_channels, kernel_size=1, stride=1, padding=0),
-            nn.BatchNorm2d(inter_channels),
-            nn.ReLU(inplace=True),
-            nn.Conv2d(inter_channels, channels, kernel_size=1, stride=1, padding=0),
-            nn.BatchNorm2d(channels),
-        )
-
-        self.global_att = nn.Sequential(
-            nn.AdaptiveAvgPool2d(1),
-            nn.Conv2d(channels, inter_channels, kernel_size=1, stride=1, padding=0),
-            nn.BatchNorm2d(inter_channels),
-            nn.ReLU(inplace=True),
-            nn.Conv2d(inter_channels, channels, kernel_size=1, stride=1, padding=0),
-            nn.BatchNorm2d(channels),
-        )
-
-        self.sigmoid = nn.Sigmoid()
-        self.conv = ConvBNReLU(256, 128, kernel_size=1, stride=1, padding=0)
-
-    def forward(self, x, residual):
-        xa = x + residual
-        xl = self.local_att(xa)
-        xg = self.global_att(xa)
-        xlg = xl + xg
-        wei = self.sigmoid(xlg)
-        x1 = 2 * x * wei
-        x2 = 2 * residual * (1 - wei)
-        xo = torch.cat([x1, x2],dim=1)
-        return self.conv(xo)
-
-    def get_params(self):
-        wd_params, nowd_params = [], []
-        for name, module in self.named_modules():
-            if isinstance(module, (nn.Linear, nn.Conv2d)):
-                wd_params.append(module.weight)
-                if not module.bias is None:
-                    nowd_params.append(module.bias)
-            elif isinstance(module, nn.modules.batchnorm._BatchNorm):
-                nowd_params += list(module.parameters())
-        return wd_params, nowd_params
 
 
 class ConvBNReLU(nn.Module):
@@ -89,6 +40,55 @@ class ConvBNReLU(nn.Module):
                 nn.init.kaiming_normal_(ly.weight, a=1)
                 if not ly.bias is None: nn.init.constant_(ly.bias, 0)
 
+class AFF(nn.Module):
+    def __init__(self, channels=64, r=4):
+        super(AFF, self).__init__()
+        inter_channels = int(channels // r)
+
+        self.local_att = nn.Sequential(
+            nn.Conv2d(channels, inter_channels, kernel_size=1, stride=1, padding=0),
+            nn.BatchNorm2d(inter_channels),
+            nn.ReLU(inplace=True),
+            nn.Conv2d(inter_channels, channels, kernel_size=1, stride=1, padding=0),
+            nn.BatchNorm2d(channels),
+        )
+
+        self.global_att = nn.Sequential(
+            nn.AdaptiveAvgPool2d(1),
+            nn.Conv2d(channels, inter_channels, kernel_size=1, stride=1, padding=0),
+            nn.BatchNorm2d(inter_channels),
+            nn.ReLU(inplace=True),
+            nn.Conv2d(inter_channels, channels, kernel_size=1, stride=1, padding=0),
+            nn.BatchNorm2d(channels),
+        )
+
+        self.sigmoid = nn.Sigmoid()
+        self.conv = nn.Conv2d(256,128, kernel_size=1,stride=1,padding=0,bias=False)
+        self.bn = BatchNorm2d(128)
+        self.relu = nn.ReLU(inplace=True)
+
+    def forward(self, x, residual):
+        xa = x + residual
+        xl = self.local_att(xa)
+        xg = self.global_att(xa)
+        xlg = xl + xg
+        wei = self.sigmoid(xlg)
+        x1 = 2 * x * wei
+        x2 = 2 * residual * (1 - wei)
+        xo = torch.cat([x1, x2], dim=1)
+        xo = self.relu(self.bn(self.conv(xo)))
+        return xo
+
+    def get_params(self):
+        wd_params, nowd_params = [], []
+        for name, module in self.named_modules():
+            if isinstance(module, (nn.Linear, nn.Conv2d)):
+                wd_params.append(module.weight)
+                if not module.bias is None:
+                    nowd_params.append(module.bias)
+            elif isinstance(module, nn.modules.batchnorm._BatchNorm):
+                nowd_params += list(module.parameters())
+        return wd_params, nowd_params
 
 class UpSample(nn.Module):
 
