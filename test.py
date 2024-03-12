@@ -11,14 +11,10 @@ from torch.utils.data import DataLoader
 from lib.models.ddrnet import ddrnet_silm
 from lib.models.bisenetv1 import BiSeNetV1
 from lib.models.bisenetv2 import BiSeNetV2
-from lib.models.bisenetv1_noarm import BiSeNetV1_noarm
-from lib.models.bisenetv1_noarmglobal import BiSeNetV1_noarmglobal
 from lib.models.bisenetv1_noarm_global2aspp import BiSeNetV1_noarm_global2aspp
 from lib.models.bisenetv1_noarm_global2taspp import BiSeNetV1_noarm_global2taspp
-from lib.models.bisenetv1_ffm2mix import BiSeNetV1_ffm2mix
 from lib.models.bisenetv1_noarm_global2taspp_ffm2aff import BiSeNetV1_noarm_global2taspp_ffm2aff
 from lib.models.bisenetv1_noarm_global2taspp_ffmnoatten import BiSeNetV1_noarm_global2taspp_ffmnoatten
-from lib.models.bisenetv1_noarm_global2taspp_noffm import BiSeNetV1_noarm_global2taspp_noffm
 
 from torch.nn.modules.loss import CrossEntropyLoss
 from lib.losses.ohem_cross_entropy_loss import OhemCrossEntropyLoss
@@ -70,12 +66,6 @@ if __name__ == '__main__':
     elif 'bisenetv1' in args.model:
         if args.model == 'bisenetv1':
             model = BiSeNetV1(args.num_classes)
-        elif args.model == 'bisenetv1_ffm2mix':
-            model = BiSeNetV1_ffm2mix(args.num_classes)
-        elif args.model == 'bisenetv1_noarm':
-            model = BiSeNetV1_noarm(args.num_classes)
-        elif args.model == 'bisenetv1_noarmglobal':
-            model = BiSeNetV1_noarmglobal(args.num_classes)
         elif args.model == 'bisenetv1_noarm_global2taspp':
             model = BiSeNetV1_noarm_global2taspp(args.num_classes)
         elif args.model == 'bisenetv1_noarm_global2aspp':
@@ -84,8 +74,6 @@ if __name__ == '__main__':
             model = BiSeNetV1_noarm_global2taspp_ffm2aff(args.num_classes)
         elif args.model == 'bisenetv1_noarm_global2taspp_ffmnoatten':
             model = BiSeNetV1_noarm_global2taspp_ffmnoatten(args.num_classes)
-        elif args.model == 'bisenetv1_noarm_global2taspp_noffm':
-            model = BiSeNetV1_noarm_global2taspp_noffm(args.num_classes)
         else:
             raise KeyError("unknown model: {}".format(args.model))
 

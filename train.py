@@ -15,14 +15,9 @@ from torch.utils.data import DataLoader
 from lib.models.ddrnet import ddrnet_silm
 from lib.models.bisenetv1 import BiSeNetV1
 from lib.models.bisenetv2 import BiSeNetV2
-from lib.models.bisenetv1_noarm import BiSeNetV1_noarm
-from lib.models.bisenetv1_noglobal import BiSeNetV1_noglobal
-from lib.models.bisenetv1_noarmglobal import BiSeNetV1_noarmglobal
 from lib.models.bisenetv1_noarm_global2taspp import BiSeNetV1_noarm_global2taspp
 from lib.models.bisenetv1_noarm_global2aspp import BiSeNetV1_noarm_global2aspp
-from lib.models.bisenetv1_ffm2mix import BiSeNetV1_ffm2mix
 from lib.models.bisenetv1_noarm_global2taspp_ffm2aff import BiSeNetV1_noarm_global2taspp_ffm2aff
-from lib.models.bisenetv1_noarm_global2taspp_ffm2umf import BiSeNetV1_noarm_global2taspp_ffm2umf
 from lib.models.bisenetv1_noarm_global2taspp_ffmnoatten import BiSeNetV1_noarm_global2taspp_ffmnoatten
 
 from torch.optim.lr_scheduler import PolynomialLR
@@ -98,22 +93,12 @@ if __name__ == "__main__":
     elif 'bisenetv1' in args.model:
         if args.model == 'bisenetv1':
             model = BiSeNetV1(args.num_classes)
-        elif args.model == 'bisenetv1_ffm2mix':
-            model = BiSeNetV1_ffm2mix(args.num_classes)
-        elif args.model == 'bisenetv1_noarm':
-            model = BiSeNetV1_noarm(args.num_classes)
-        elif args.model == 'bisenetv1_noglobal':
-            model = BiSeNetV1_noglobal(args.num_classes)
-        elif args.model == 'bisenetv1_noarmglobal':
-            model = BiSeNetV1_noarmglobal(args.num_classes)
         elif args.model == 'bisenetv1_noarm_global2aspp':
             model = BiSeNetV1_noarm_global2aspp(args.num_classes)
         elif args.model == 'bisenetv1_noarm_global2taspp':
             model = BiSeNetV1_noarm_global2taspp(args.num_classes)
         elif args.model == 'bisenetv1_noarm_global2taspp_ffm2aff':
             model = BiSeNetV1_noarm_global2taspp_ffm2aff(args.num_classes)
-        elif args.model == 'bisenetv1_noarm_global2taspp_ffm2umf':
-            model = BiSeNetV1_noarm_global2taspp_ffm2umf(args.num_classes)
         elif args.model == 'bisenetv1_noarm_global2taspp_ffmnoatten':
             model = BiSeNetV1_noarm_global2taspp_ffmnoatten(args.num_classes)
         else:
