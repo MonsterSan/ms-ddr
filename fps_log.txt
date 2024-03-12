@@ -140,3 +140,7 @@
 [19:40:55.354] fps: 242.81681641967393
 [19:41:20.768] Namespace(model='bisenetv1_noarm_global2taspp_ffm2aff', img_size=(512, 512), channels=3, num_classes=2)
 [19:42:03.378] fps: 234.82529544874433
+[22:34:35.927] Namespace(model='bisenetv1_noarm_global2taspp_ffm2umf', img_size=(512, 512), channels=3, num_classes=2)
+[22:35:16.259] fps: 248.1141320843074
+[22:35:31.042] Namespace(model='bisenetv1_noarm_global2taspp_ffm2umf', img_size=(512, 512), channels=3, num_classes=2)
+[22:36:11.505] fps: 247.29847763973552

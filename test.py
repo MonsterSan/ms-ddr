@@ -17,6 +17,8 @@ from lib.models.bisenetv1_noarm_global2aspp import BiSeNetV1_noarm_global2aspp
 from lib.models.bisenetv1_noarm_global2taspp import BiSeNetV1_noarm_global2taspp
 from lib.models.bisenetv1_ffm2mix import BiSeNetV1_ffm2mix
 from lib.models.bisenetv1_noarm_global2taspp_ffm2aff import BiSeNetV1_noarm_global2taspp_ffm2aff
+from lib.models.bisenetv1_noarm_global2taspp_ffmnoatten import BiSeNetV1_noarm_global2taspp_ffmnoatten
+from lib.models.bisenetv1_noarm_global2taspp_noffm import BiSeNetV1_noarm_global2taspp_noffm
 
 from torch.nn.modules.loss import CrossEntropyLoss
 from lib.losses.ohem_cross_entropy_loss import OhemCrossEntropyLoss
@@ -26,9 +28,9 @@ from lib.utils.confusion_matrix import ConfusionMatrix
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str,
-                    default='bisenetv1_noarm_global2taspp_ffm2aff', help='model name')
+                    default='bisenetv1_noarm_global2taspp_noffm', help='model name')
 parser.add_argument('--log_path', type=str,
-                    default='./run/bisenetv1_noarm_global2taspp_ffm2aff_20240311_192051', help='log path')
+                    default='./run/bisenetv1_noarm_global2taspp_noffm_20240312_120256', help='log path')
 parser.add_argument('--checkpoint_type', type=str,
                     default='best_miou', help="best_miou or last or min_loss")
 # D:\\data\\Crack_Forest_paddle\\Crack_Forest_paddle
@@ -80,6 +82,10 @@ if __name__ == '__main__':
             model = BiSeNetV1_noarm_global2aspp(args.num_classes)
         elif args.model == 'bisenetv1_noarm_global2taspp_ffm2aff':
             model = BiSeNetV1_noarm_global2taspp_ffm2aff(args.num_classes)
+        elif args.model == 'bisenetv1_noarm_global2taspp_ffmnoatten':
+            model = BiSeNetV1_noarm_global2taspp_ffmnoatten(args.num_classes)
+        elif args.model == 'bisenetv1_noarm_global2taspp_noffm':
+            model = BiSeNetV1_noarm_global2taspp_noffm(args.num_classes)
         else:
             raise KeyError("unknown model: {}".format(args.model))
 
