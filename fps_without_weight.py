@@ -9,11 +9,12 @@ from lib.models.bisenetv1 import BiSeNetV1
 from lib.models.bisenetv2 import BiSeNetV2
 from lib.models.bisenetv1_noarm_global2aspp import BiSeNetV1_noarm_global2aspp
 from lib.models.bisenetv1_noarm_global2taspp import BiSeNetV1_noarm_global2taspp
-from lib.models.bisenetv1_noarm_global2taspp_ffm2aff import BiSeNetV1_noarm_global2taspp_ffm2aff
+from lib.models.bisenetv1_global2taspp_arm2tri import BiSeNetV1_global2taspp_arm2tri
+from lib.models.bisenetv1_global2taspp import BiSeNetV1_global2taspp
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str,
-                    default='bisenetv1_noarm_global2taspp_ffm2umf', help='model name')
+                    default='bisenetv1', help='model name')
 parser.add_argument('--img_size', type=tuple,
                     default=(512, 512), help='input patch size of network input')
 parser.add_argument('--channels', type=int,
@@ -29,12 +30,14 @@ if __name__ == '__main__':
         model = ddrnet_23(args.num_classes)
     elif args.model == 'bisenetv1':
         model = BiSeNetV1(args.num_classes)
-    elif args.model == 'bisenetv1_noarm_global2aspp':
+    elif args.model == 'bisenetv1_global2taspp':
+        model = BiSeNetV1_global2taspp(args.num_classes)
+    elif args.model == 'bisenetv1_global2aspp':
         model = BiSeNetV1_noarm_global2aspp(args.num_classes)
     elif args.model == 'bisenetv1_noarm_global2taspp':
         model = BiSeNetV1_noarm_global2taspp(args.num_classes)
-    elif args.model == 'bisenetv1_noarm_global2taspp_ffm2aff':
-        model = BiSeNetV1_noarm_global2taspp_ffm2aff(args.num_classes)
+    elif args.model == 'bisenetv1_global2taspp_arm2tri':
+        model = BiSeNetV1_global2taspp_arm2tri(args.num_classes)
     elif args.model == 'bisenetv2':
         model = BiSeNetV2(args.num_classes)
     else:

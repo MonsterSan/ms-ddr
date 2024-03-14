@@ -18,8 +18,6 @@ from lib.models.bisenetv2 import BiSeNetV2
 from lib.models.bisenetv1_noarm_global2taspp import BiSeNetV1_noarm_global2taspp
 from lib.models.bisenetv1_noarm_global2aspp import BiSeNetV1_noarm_global2aspp
 from lib.models.bisenetv1_global2taspp import BiSeNetV1_global2taspp
-from lib.models.bisenetv1_global2taspp_ffmarm import BiSeNetV1_global2taspp_ffmarm
-from lib.models.bisenetv1_global2taspp_arm2tri import BiSeNetV1_global2taspp_arm2tri
 
 from torch.optim.lr_scheduler import PolynomialLR
 from torch.nn.modules.loss import CrossEntropyLoss
@@ -100,10 +98,6 @@ if __name__ == "__main__":
             model = BiSeNetV1_noarm_global2taspp(args.num_classes)
         elif args.model == 'bisenetv1_global2taspp':
             model = BiSeNetV1_global2taspp(args.num_classes)
-        elif args.model == 'bisenetv1_global2taspp_arm2tri':
-            model = BiSeNetV1_global2taspp_arm2tri(args.num_classes)
-        elif args.model == 'bisenetv1_global2taspp_ffmarm':
-            model = BiSeNetV1_global2taspp_ffmarm(args.num_classes)
         else:
             raise KeyError("unknown model: {}".format(args.model))
 
