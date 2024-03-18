@@ -12,7 +12,7 @@ import math
 from lib.datasets.dataset_crack import CrackDataset
 from torch.utils.data import DataLoader
 
-from lib.models.ddrnet import ddrnet_silm
+from lib.models.ddrnet import ddrnet_silm, ddrnet_23
 from lib.models.bisenetv1 import BiSeNetV1
 from lib.models.bisenetv2 import BiSeNetV2
 from lib.models.bisenetv1_noarm_global2taspp import BiSeNetV1_noarm_global2taspp
@@ -32,7 +32,7 @@ from utils.save_weight import save_weights
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str,
-                    default='bisenetv1_global2taspp_nocp', help='model name')
+                    default='ddrnet', help='model name')
 # D:\\data\\Crack_Forest_paddle\\Crack_Forest_paddle
 # /home/user/data/lumianliefeng/Crack_Forest_paddle
 # /home/user/data/liefeng/Crack_paddle_255
@@ -45,7 +45,7 @@ parser.add_argument('--num_classes', type=int,
 parser.add_argument('--max_epochs', type=int,
                     default=100, help='maximum epoch number to train')
 parser.add_argument('--batch_size', type=int,
-                    default=8, help='batch_size per gpu')
+                    default=4, help='batch_size per gpu')
 parser.add_argument('--base_lr', type=float,
                     default=0.01, help='segmentation network learning rate')
 parser.add_argument('--seed', type=int,
@@ -86,6 +86,10 @@ if __name__ == "__main__":
         model = ddrnet_silm(args.num_classes)
         losses = [OhemCrossEntropyLoss()]
         loss_weights = [1]
+    elif args.model == 'ddrnet_23':
+        model = ddrnet_23(args.num_classes)
+        losses = [OhemCrossEntropyLoss()]
+        loss_weights = [1]
     elif args.model == 'bisenetv2':
         model = BiSeNetV2(args.num_classes)
         losses = [CrossEntropyLoss(), CrossEntropyLoss(), CrossEntropyLoss(), CrossEntropyLoss(), CrossEntropyLoss()]
@@ -99,9 +103,10 @@ if __name__ == "__main__":
             model = BiSeNetV1_noarm_global2taspp(args.num_classes)
         elif args.model == 'bisenetv1_global2taspp':
             model = BiSeNetV1_global2taspp(args.num_classes)
+        elif args.model == 'bisenetv1_global2taspp_nocp':
+            model = BiSeNetV1_global2taspp_nocp(args.num_classes)
         else:
             raise KeyError("unknown model: {}".format(args.model))
-
         losses = [OhemCrossEntropyLoss(), OhemCrossEntropyLoss(), OhemCrossEntropyLoss()]
         loss_weights = [1, 1, 1]
     else:

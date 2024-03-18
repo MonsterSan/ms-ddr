@@ -9,12 +9,11 @@ from lib.models.bisenetv1 import BiSeNetV1
 from lib.models.bisenetv2 import BiSeNetV2
 from lib.models.bisenetv1_noarm_global2aspp import BiSeNetV1_noarm_global2aspp
 from lib.models.bisenetv1_noarm_global2taspp import BiSeNetV1_noarm_global2taspp
-from lib.models.bisenetv1_global2taspp_arm2tri import BiSeNetV1_global2taspp_arm2tri
 from lib.models.bisenetv1_global2taspp import BiSeNetV1_global2taspp
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str,
-                    default='bisenetv1', help='model name')
+                    default='ddrnet_silm', help='model name')
 parser.add_argument('--img_size', type=tuple,
                     default=(512, 512), help='input patch size of network input')
 parser.add_argument('--channels', type=int,

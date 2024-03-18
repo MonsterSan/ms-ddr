@@ -348,7 +348,7 @@ def ddrnet_silm(num_classes):
 
 
 if __name__ == '__main__':
-    model = ddrnet_23(2)
+    model = ddrnet_silm(2)
     model.eval()
     x = torch.randn(1, 3, 512, 512)
     out = model(x)
