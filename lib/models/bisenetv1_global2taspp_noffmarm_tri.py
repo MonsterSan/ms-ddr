@@ -12,7 +12,42 @@ from lib.models.resnet import Resnet18
 from torch.nn import BatchNorm2d
 
 
+class ZPool(nn.Module):
+    def forward(self, x):
+        return torch.cat((torch.max(x, 1)[0].unsqueeze(1), torch.mean(x, 1).unsqueeze(1)), dim=1)
 
+
+class AttentionGate(nn.Module):
+    def __init__(self):
+        super(AttentionGate, self).__init__()
+        kernel_size = 7
+        self.compress = ZPool()
+        self.conv = ConvBNReLU(2, 1, kernel_size, stride=1, padding=(kernel_size - 1) // 2, relu=False)
+
+    def forward(self, x):
+        x_compress = self.compress(x)
+        x_out = self.conv(x_compress)
+        scale = torch.sigmoid_(x_out)
+        return x * scale
+
+
+class TripletAttention(nn.Module):
+    def __init__(self):
+        super(TripletAttention, self).__init__()
+        self.cw = AttentionGate()
+        self.hc = AttentionGate()
+        self.hw = AttentionGate()
+
+    def forward(self, x):
+        x_perm1, x_perm2, x_perm3 = torch.chunk(x, 3, dim=1)
+        x_perm1 = x_perm1.permute(0, 2, 1, 3).contiguous()
+        x_out1 = self.cw(x_perm1)
+        x_out11 = x_out1.permute(0, 2, 1, 3).contiguous()
+        x_perm2 = x_perm2.permute(0, 3, 2, 1).contiguous()
+        x_out2 = self.hc(x_perm2)
+        x_out21 = x_out2.permute(0, 3, 2, 1).contiguous()
+        x_out3 = self.hw(x_perm3)
+        return torch.cat([x_out11, x_out21, x_out3], dim=1)
 
 
 class ConvBNReLU(nn.Module):
@@ -101,7 +136,7 @@ class ASPP(nn.Module):
         super(ASPP, self).__init__()
         if not atrous_rates:
             atrous_rates = [6, 12, 18]
-        self.split = in_channels//5
+        self.split = in_channels // 5
         self.inc = in_channels
         # 1*1 branch
         self.branch1 = nn.Sequential(
@@ -137,8 +172,8 @@ class ASPP(nn.Module):
         # avgpool branch
         self.branch5 = nn.Sequential(
             nn.AdaptiveAvgPool2d(1),
-            nn.Conv2d(in_channels-self.split*4, in_channels-self.split*4, 1, bias=False),
-            nn.BatchNorm2d(in_channels-self.split*4),
+            nn.Conv2d(in_channels - self.split * 4, in_channels - self.split * 4, 1, bias=False),
+            nn.BatchNorm2d(in_channels - self.split * 4),
             nn.ReLU()
         )
 
@@ -149,7 +184,8 @@ class ASPP(nn.Module):
             nn.Dropout(0.5))
 
     def forward(self, x):
-        x1, x2, x3, x4, x5 = torch.split(x, [self.split,self.split,self.split,self.split,self.inc-4*self.split], dim=1)
+        x1, x2, x3, x4, x5 = torch.split(x, [self.split, self.split, self.split, self.split, self.inc - 4 * self.split],
+                                         dim=1)
         out1 = self.branch1(x1)
         out2 = self.branch2(x2)
         out3 = self.branch3(x3)
@@ -165,7 +201,7 @@ class AttentionRefinementModule(nn.Module):
     def __init__(self, in_chan, out_chan, *args, **kwargs):
         super(AttentionRefinementModule, self).__init__()
         self.conv = ConvBNReLU(in_chan, out_chan, ks=3, stride=1, padding=1)
-        self.conv_atten = nn.Conv2d(out_chan, out_chan, kernel_size= 1, bias=False)
+        self.conv_atten = nn.Conv2d(out_chan, out_chan, kernel_size=1, bias=False)
         self.bn_atten = BatchNorm2d(out_chan)
         #  self.sigmoid_atten = nn.Sigmoid()
         self.init_weight()
@@ -186,18 +222,20 @@ class AttentionRefinementModule(nn.Module):
                 nn.init.kaiming_normal_(ly.weight, a=1)
                 if not ly.bias is None: nn.init.constant_(ly.bias, 0)
 
+
 class ContextPath(nn.Module):
     def __init__(self, *args, **kwargs):
         super(ContextPath, self).__init__()
         self.resnet = Resnet18()
         self.conv16 = nn.Conv2d(256, 128, kernel_size=1, stride=1, padding=0)
-        #self.arm32 = AttentionRefinementModule(128, 128)
+        # self.arm32 = AttentionRefinementModule(128, 128)
         self.conv_head32 = ConvBNReLU(128, 128, ks=3, stride=1, padding=1)
         self.conv_head16 = ConvBNReLU(128, 128, ks=3, stride=1, padding=1)
         self.conv_avg = ConvBNReLU(512, 128, ks=1, stride=1, padding=0)
         self.up32 = nn.Upsample(scale_factor=2.)
         self.up16 = nn.Upsample(scale_factor=2.)
         self.aspp = ASPP(512, 128)
+        self.tri = TripletAttention()
         self.init_weight()
 
     def forward(self, x):
@@ -210,7 +248,8 @@ class ContextPath(nn.Module):
         feat16_sum = feat16_conv + feat32_up
         # 40 40 48 triplet 3 branches
         # contact -> 1*1
-        feat16_up = self.up16(feat16_sum)
+        feat16_tri = self.tri(feat16_sum)
+        feat16_up = self.up16(feat16_tri)
         feat16_up = self.conv_head16(feat16_up)
 
         return feat16_up, feat32_up  # x8, x16
@@ -267,10 +306,10 @@ class SpatialPath(nn.Module):
         return wd_params, nowd_params
 
 
-class BiSeNetV1_global2taspp_noffmarm(nn.Module):
+class BiSeNetV1_global2taspp_noffmarm_tri(nn.Module):
 
     def __init__(self, n_classes, aux_mode='train', *args, **kwargs):
-        super(BiSeNetV1_global2taspp_noffmarm, self).__init__()
+        super(BiSeNetV1_global2taspp_noffmarm_tri, self).__init__()
         self.cp = ContextPath()
         self.sp = SpatialPath()
         self.conv_out = BiSeNetOutput(128, 128, n_classes, up_factor=8)
@@ -284,7 +323,7 @@ class BiSeNetV1_global2taspp_noffmarm(nn.Module):
         H, W = x.size()[2:]
         feat_cp8, feat_cp16 = self.cp(x)
         feat_sp = self.sp(x)
-        feat_fuse = feat_sp+feat_cp8
+        feat_fuse = feat_sp + feat_cp8
 
         feat_out = self.conv_out(feat_fuse)
         if self.aux_mode == 'train':
@@ -319,7 +358,7 @@ class BiSeNetV1_global2taspp_noffmarm(nn.Module):
 
 
 if __name__ == "__main__":
-    net = BiSeNetV1_global2taspp_noffmarm(2)
+    net = BiSeNetV1_global2taspp_noffmarm_tri(2)
     net.cuda()
     net.eval()
     in_ten = torch.randn(16, 3, 512, 512).cuda()
