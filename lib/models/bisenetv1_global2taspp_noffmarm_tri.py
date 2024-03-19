@@ -12,6 +12,8 @@ from lib.models.resnet import Resnet18
 from torch.nn import BatchNorm2d
 
 
+#RuntimeError: one of the variables needed for gradient computation has been modified by an inplace operation: [torch.cuda.FloatTensor [8, 1, 32, 32]], which is output 0 of ReluBackward0, is at version 2; expected version 1 instead. Hint: enable anomaly detection to find the operation that failed to compute its gradient, with torch.autograd.set_detect_anomaly(True).
+
 class ZPool(nn.Module):
     def forward(self, x):
         return torch.cat((torch.max(x, 1)[0].unsqueeze(1), torch.mean(x, 1).unsqueeze(1)), dim=1)
@@ -27,7 +29,7 @@ class AttentionGate(nn.Module):
     def forward(self, x):
         x_compress = self.compress(x)
         x_out = self.conv(x_compress)
-        scale = torch.sigmoid_(x_out)
+        scale = x_out.sigmoid_()
         return x * scale
 
 
