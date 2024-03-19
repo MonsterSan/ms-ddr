@@ -275,6 +275,20 @@ class atten(nn.Module):
                               padding=0,
                               bias=False)
 
+    # bisenetv1_global2taspp_ffm2atten_20240318_224842
+    # return cp * atten +sp * (1 - atten)
+
+    # bisenetv1_global2taspp_ffm2atten_20240319_104613
+    # return cp * (1-atten) +sp * atten
+
+    # bisenetv1_global2taspp_ffm2atten_20240319_130744
+    # return cp * atten + sp * atten
+
+    # bisenetv1_global2taspp_ffm2atten_20240319_143049
+    # return cp * atten + sp
+
+    # bisenetv1_global2taspp_ffm2atten_20240319_165813
+    # torch.cat([cp * atten, sp * (1 - atten)], dim=1)
     def forward(self, cp, sp):
         cp_max, _ = torch.max(cp, dim=1, keepdim=True)
         cp_mean = torch.mean(cp, dim=1, keepdim=True)
@@ -282,7 +296,7 @@ class atten(nn.Module):
         sp_mean = torch.mean(sp, dim=1, keepdim=True)
         atten = self.conv(torch.cat([cp_max, cp_mean, sp_max, sp_mean], dim=1))
         atten = atten.sigmoid()
-        return cp * atten +sp * (1 - atten)
+        return torch.cat([cp * atten, sp * (1 - atten)], dim=1)
 
     def get_params(self):
         wd_params, nowd_params = [], []
@@ -295,6 +309,7 @@ class atten(nn.Module):
                 nowd_params += list(module.parameters())
         return wd_params, nowd_params
 
+
 class BiSeNetV1_global2taspp_ffm2atten(nn.Module):
 
     def __init__(self, n_classes, aux_mode='train', *args, **kwargs):
@@ -302,7 +317,7 @@ class BiSeNetV1_global2taspp_ffm2atten(nn.Module):
         self.cp = ContextPath()
         self.sp = SpatialPath()
         self.ffm = atten()
-        self.conv_out = BiSeNetOutput(128, 128, n_classes, up_factor=8)
+        self.conv_out = BiSeNetOutput(256, 256, n_classes, up_factor=8)
         self.aux_mode = aux_mode
         if self.aux_mode == 'train':
             self.conv_out16 = BiSeNetOutput(128, 64, n_classes, up_factor=8)
