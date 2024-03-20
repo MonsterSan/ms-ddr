@@ -12,8 +12,6 @@ from lib.models.resnet import Resnet18
 from torch.nn import BatchNorm2d
 
 
-# RuntimeError: one of the variables needed for gradient computation has been modified by an inplace operation: [torch.cuda.FloatTensor [8, 1, 32, 32]], which is output 0 of ReluBackward0, is at version 2; expected version 1 instead. Hint: enable anomaly detection to find the operation that failed to compute its gradient, with torch.autograd.set_detect_anomaly(True).
-
 class ZPool(nn.Module):
     def forward(self, x):
         return torch.cat((torch.max(x, 1)[0].unsqueeze(1), torch.mean(x, 1).unsqueeze(1)), dim=1)
@@ -55,17 +53,16 @@ class TripletAttention(nn.Module):
 
         return torch.cat([x_out11, x_out21, x_out3], dim=1)
 
-
 class ConvBNReLU(nn.Module):
 
     def __init__(self, in_chan, out_chan, ks=3, stride=1, padding=1, *args, **kwargs):
         super(ConvBNReLU, self).__init__()
         self.conv = nn.Conv2d(in_chan,
-                              out_chan,
-                              kernel_size=ks,
-                              stride=stride,
-                              padding=padding,
-                              bias=False)
+                out_chan,
+                kernel_size = ks,
+                stride = stride,
+                padding = padding,
+                bias = False)
         self.bn = BatchNorm2d(out_chan)
         self.relu = nn.ReLU(inplace=True)
         self.init_weight()
@@ -110,7 +107,7 @@ class BiSeNetOutput(nn.Module):
         self.conv = ConvBNReLU(in_chan, mid_chan, ks=3, stride=1, padding=1)
         self.conv_out = nn.Conv2d(mid_chan, out_chan, kernel_size=1, bias=True)
         self.up = nn.Upsample(scale_factor=up_factor,
-                              mode='bilinear', align_corners=False)
+                mode='bilinear', align_corners=False)
         self.init_weight()
 
     def forward(self, x):
@@ -137,77 +134,11 @@ class BiSeNetOutput(nn.Module):
         return wd_params, nowd_params
 
 
-class ASPP(nn.Module):
-    def __init__(self, in_channels, out_channels, atrous_rates=None):
-        super(ASPP, self).__init__()
-        if not atrous_rates:
-            atrous_rates = [6, 12, 18]
-        self.split = in_channels // 5
-        self.inc = in_channels
-        # 1*1 branch
-        self.branch1 = nn.Sequential(
-            nn.Conv2d(self.split, self.split, 1, bias=False),
-            nn.BatchNorm2d(self.split),
-            nn.ReLU()
-        )
-
-        # 3*3 rate 6 branch
-        self.branch2 = nn.Sequential(
-            nn.Conv2d(self.split, self.split, 3, padding=atrous_rates[0], dilation=atrous_rates[0],
-                      bias=False),
-            nn.BatchNorm2d(self.split),
-            nn.ReLU()
-        )
-
-        # 3*3 rate 12 branch
-        self.branch3 = nn.Sequential(
-            nn.Conv2d(self.split, self.split, 3, padding=atrous_rates[1], dilation=atrous_rates[1],
-                      bias=False),
-            nn.BatchNorm2d(self.split),
-            nn.ReLU()
-        )
-
-        # 3*3 rate 18 branch
-        self.branch4 = nn.Sequential(
-            nn.Conv2d(self.split, self.split, 3, padding=atrous_rates[2], dilation=atrous_rates[2],
-                      bias=False),
-            nn.BatchNorm2d(self.split),
-            nn.ReLU()
-        )
-
-        # avgpool branch
-        self.branch5 = nn.Sequential(
-            nn.AdaptiveAvgPool2d(1),
-            nn.Conv2d(in_channels - self.split * 4, in_channels - self.split * 4, 1, bias=False),
-            nn.BatchNorm2d(in_channels - self.split * 4),
-            nn.ReLU()
-        )
-
-        self.project = nn.Sequential(
-            nn.Conv2d(in_channels, out_channels, 1, bias=False),
-            nn.BatchNorm2d(out_channels),
-            nn.ReLU(),
-            nn.Dropout(0.5))
-
-    def forward(self, x):
-        x1, x2, x3, x4, x5 = torch.split(x, [self.split, self.split, self.split, self.split, self.inc - 4 * self.split],
-                                         dim=1)
-        out1 = self.branch1(x1)
-        out2 = self.branch2(x2)
-        out3 = self.branch3(x3)
-        out4 = self.branch4(x4)
-        out5 = self.branch5(x5)
-        size = x.shape[-2:]
-        out5 = F.interpolate(out5, size=size, mode='bilinear', align_corners=False)
-        out = torch.cat([out1, out2, out3, out4, out5], dim=1)
-        return self.project(out)
-
-
 class AttentionRefinementModule(nn.Module):
     def __init__(self, in_chan, out_chan, *args, **kwargs):
         super(AttentionRefinementModule, self).__init__()
         self.conv = ConvBNReLU(in_chan, out_chan, ks=3, stride=1, padding=1)
-        self.conv_atten = nn.Conv2d(out_chan, out_chan, kernel_size=1, bias=False)
+        self.conv_atten = nn.Conv2d(out_chan, out_chan, kernel_size= 1, bias=False)
         self.bn_atten = BatchNorm2d(out_chan)
         #  self.sigmoid_atten = nn.Sigmoid()
         self.init_weight()
@@ -233,33 +164,35 @@ class ContextPath(nn.Module):
     def __init__(self, *args, **kwargs):
         super(ContextPath, self).__init__()
         self.resnet = Resnet18()
-        self.conv16 = nn.Conv2d(256, 128, kernel_size=1, stride=1, padding=0)
-        # self.arm32 = AttentionRefinementModule(128, 128)
+        self.arm16 = AttentionRefinementModule(256, 128)
+        self.arm32 = AttentionRefinementModule(512, 128)
         self.conv_head32 = ConvBNReLU(128, 128, ks=3, stride=1, padding=1)
         self.conv_head16 = ConvBNReLU(128, 128, ks=3, stride=1, padding=1)
         self.conv_avg = ConvBNReLU(512, 128, ks=1, stride=1, padding=0)
         self.up32 = nn.Upsample(scale_factor=2.)
         self.up16 = nn.Upsample(scale_factor=2.)
-        self.aspp = ASPP(512, 128)
         self.tri = TripletAttention()
+
         self.init_weight()
 
     def forward(self, x):
         feat8, feat16, feat32 = self.resnet(x)
-        feat32_arm = self.aspp(feat32)
-        feat32_up = self.up32(feat32_arm)
+
+        avg = torch.mean(feat32, dim=(2, 3), keepdim=True)
+        avg = self.conv_avg(avg)
+
+        feat32_arm = self.arm32(feat32)
+        feat32_sum = feat32_arm + avg
+        feat32_up = self.up32(feat32_sum)
         feat32_up = self.conv_head32(feat32_up)
 
-        feat16_conv = self.conv16(feat16)
-        feat16_sum = feat16_conv + feat32_up
-        # 40 40 48 triplet 3 branches
-        # contact -> 1*1
-        # 16 128 32 32
-        feat16_tri = self.tri(feat16_sum)
-        feat16_up = self.up16(feat16_tri)
+        feat16_arm = self.arm16(feat16)
+        feat16_sum = feat16_arm + feat32_up
+        feat16_sum = self.tri(feat16_sum)
+        feat16_up = self.up16(feat16_sum)
         feat16_up = self.conv_head16(feat16_up)
 
-        return feat16_up, feat32_up  # x8, x16
+        return feat16_up, feat32_up # x8, x16
 
     def init_weight(self):
         for ly in self.children():
@@ -313,13 +246,73 @@ class SpatialPath(nn.Module):
         return wd_params, nowd_params
 
 
-class BiSeNetV1_global2taspp_noffmarm_tri(nn.Module):
+class FeatureFusionModule(nn.Module):
+    def __init__(self, in_chan, out_chan, *args, **kwargs):
+        super(FeatureFusionModule, self).__init__()
+        self.convblk = ConvBNReLU(in_chan, out_chan, ks=1, stride=1, padding=0)
+        ## use conv-bn instead of 2 layer mlp, so that tensorrt 7.2.3.4 can work for fp16
+        self.conv = nn.Conv2d(out_chan,
+                out_chan,
+                kernel_size = 1,
+                stride = 1,
+                padding = 0,
+                bias = False)
+        self.bn = nn.BatchNorm2d(out_chan)
+        #  self.conv1 = nn.Conv2d(out_chan,
+        #          out_chan//4,
+        #          kernel_size = 1,
+        #          stride = 1,
+        #          padding = 0,
+        #          bias = False)
+        #  self.conv2 = nn.Conv2d(out_chan//4,
+        #          out_chan,
+        #          kernel_size = 1,
+        #          stride = 1,
+        #          padding = 0,
+        #          bias = False)
+        #  self.relu = nn.ReLU(inplace=True)
+        self.init_weight()
+
+    def forward(self, fsp, fcp):
+        fcat = torch.cat([fsp, fcp], dim=1)
+        feat = self.convblk(fcat)
+        atten = torch.mean(feat, dim=(2, 3), keepdim=True)
+        atten = self.conv(atten)
+        atten = self.bn(atten)
+        #  atten = self.conv1(atten)
+        #  atten = self.relu(atten)
+        #  atten = self.conv2(atten)
+        atten = atten.sigmoid()
+        feat_atten = torch.mul(feat, atten)
+        feat_out = feat_atten + feat
+        return feat_out
+
+    def init_weight(self):
+        for ly in self.children():
+            if isinstance(ly, nn.Conv2d):
+                nn.init.kaiming_normal_(ly.weight, a=1)
+                if not ly.bias is None: nn.init.constant_(ly.bias, 0)
+
+    def get_params(self):
+        wd_params, nowd_params = [], []
+        for name, module in self.named_modules():
+            if isinstance(module, (nn.Linear, nn.Conv2d)):
+                wd_params.append(module.weight)
+                if not module.bias is None:
+                    nowd_params.append(module.bias)
+            elif isinstance(module, nn.modules.batchnorm._BatchNorm):
+                nowd_params += list(module.parameters())
+        return wd_params, nowd_params
+
+
+class BiSeNetV1_tri(nn.Module):
 
     def __init__(self, n_classes, aux_mode='train', *args, **kwargs):
-        super(BiSeNetV1_global2taspp_noffmarm_tri, self).__init__()
+        super(BiSeNetV1_tri, self).__init__()
         self.cp = ContextPath()
         self.sp = SpatialPath()
-        self.conv_out = BiSeNetOutput(128, 128, n_classes, up_factor=8)
+        self.ffm = FeatureFusionModule(256, 256)
+        self.conv_out = BiSeNetOutput(256, 256, n_classes, up_factor=8)
         self.aux_mode = aux_mode
         if self.aux_mode == 'train':
             self.conv_out16 = BiSeNetOutput(128, 64, n_classes, up_factor=8)
@@ -330,7 +323,7 @@ class BiSeNetV1_global2taspp_noffmarm_tri(nn.Module):
         H, W = x.size()[2:]
         feat_cp8, feat_cp16 = self.cp(x)
         feat_sp = self.sp(x)
-        feat_fuse = feat_sp + feat_cp8
+        feat_fuse = self.ffm(feat_sp, feat_cp8)
 
         feat_out = self.conv_out(feat_fuse)
         if self.aux_mode == 'train':
@@ -355,7 +348,7 @@ class BiSeNetV1_global2taspp_noffmarm_tri(nn.Module):
         wd_params, nowd_params, lr_mul_wd_params, lr_mul_nowd_params = [], [], [], []
         for name, child in self.named_children():
             child_wd_params, child_nowd_params = child.get_params()
-            if isinstance(child, (BiSeNetOutput)):
+            if isinstance(child, (FeatureFusionModule, BiSeNetOutput)):
                 lr_mul_wd_params += child_wd_params
                 lr_mul_nowd_params += child_nowd_params
             else:
@@ -365,7 +358,7 @@ class BiSeNetV1_global2taspp_noffmarm_tri(nn.Module):
 
 
 if __name__ == "__main__":
-    net = BiSeNetV1_global2taspp_noffmarm_tri(2)
+    net = BiSeNetV1_tri(2)
     net.cuda()
     net.eval()
     in_ten = torch.randn(16, 3, 512, 512).cuda()
