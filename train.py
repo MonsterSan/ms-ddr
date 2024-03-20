@@ -18,6 +18,7 @@ from lib.models.bisenetv2 import BiSeNetV2
 from lib.models.bisenetv1_global2taspp import BiSeNetV1_global2taspp
 from lib.models.bisenetv1_global2taspp_noarm_ffm2fam import BiSeNetV1_global2taspp_noarm_ffm2fam
 from lib.models.bisenetv1_global2taspp_noarm_ffm2atten import BiSeNetV1_global2taspp_noarm_ffm2atten
+from lib.models.bisenetv1_global2taspp_ffm2umf import BiSeNetV1_global2taspp_ffm2umf
 
 from torch.optim.lr_scheduler import PolynomialLR
 from torch.nn.modules.loss import CrossEntropyLoss
@@ -31,7 +32,7 @@ from utils.save_weight import save_weights
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str,
-                    default='bisenetv1_global2taspp_noarm_ffm2atten', help='model name')
+                    default='bisenetv1_global2taspp_ffm2umf', help='model name')
 # D:\\data\\Crack_Forest_paddle\\Crack_Forest_paddle
 # /home/user/data/lumianliefeng/Crack_Forest_paddle
 # /home/user/data/liefeng/Crack_paddle_255
@@ -100,6 +101,8 @@ if __name__ == "__main__":
             model = BiSeNetV1_global2taspp(args.num_classes)
         elif args.model == 'bisenetv1_global2taspp_noarm_ffm2fam':
             model = BiSeNetV1_global2taspp_noarm_ffm2fam(args.num_classes)
+        elif args.model == 'bisenetv1_global2taspp_ffm2umf':
+            model = BiSeNetV1_global2taspp_ffm2umf(args.num_classes)
         elif args.model == 'bisenetv1_global2taspp_noarm_ffm2atten':
             model = BiSeNetV1_global2taspp_noarm_ffm2atten(args.num_classes)
         else:
