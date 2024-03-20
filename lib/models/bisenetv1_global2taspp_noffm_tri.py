@@ -12,24 +12,18 @@ from lib.models.resnet import Resnet18
 from torch.nn import BatchNorm2d
 
 
-# RuntimeError: one of the variables needed for gradient computation has been modified by an inplace operation: [torch.cuda.FloatTensor [8, 1, 32, 32]], which is output 0 of ReluBackward0, is at version 2; expected version 1 instead. Hint: enable anomaly detection to find the operation that failed to compute its gradient, with torch.autograd.set_detect_anomaly(True).
-
 class ZPool(nn.Module):
     def forward(self, x):
-        # b h c w
-        out = torch.mean(x, (2, 3), keepdim=True)
-        return out
-        # return torch.cat((torch.max(x, 1)[0].unsqueeze(1), torch.mean(x, 1).unsqueeze(1)), dim=1)
+        return torch.cat((torch.max(x, 1)[0].unsqueeze(1), torch.mean(x, 1).unsqueeze(1)), dim=1)
 
 
 class AttentionGate(nn.Module):
-    def __init__(self, in_c):
+    def __init__(self):
         super(AttentionGate, self).__init__()
-        kernel_size = 1
-        # 7
+        kernel_size = 7
 
         self.compress = ZPool()
-        self.conv = ConvBNReLU(in_c, in_c, kernel_size, stride=1, padding=(kernel_size - 1) // 2, relu=False)
+        self.conv = ConvBNReLU(2, 1, kernel_size, stride=1, padding=(kernel_size - 1) // 2, relu=False)
 
     def forward(self, x):
         x_compress = self.compress(x)
@@ -41,19 +35,17 @@ class AttentionGate(nn.Module):
 class TripletAttention(nn.Module):
     def __init__(self):
         super(TripletAttention, self).__init__()
-        self.cw = AttentionGate(32)
-        self.hc = AttentionGate(32)
-        self.hw = AttentionGate(42)
+        self.cw = AttentionGate()
+        self.hc = AttentionGate()
+        self.hw = AttentionGate()
 
     def forward(self, x):
         x_perm1, x_perm2, x_perm3 = torch.chunk(x, 3, dim=1)
         x_perm1 = x_perm1.permute(0, 2, 1, 3).contiguous()
-        # b h c w
         x_out1 = self.cw(x_perm1)
         x_out11 = x_out1.permute(0, 2, 1, 3).contiguous()
 
         x_perm2 = x_perm2.permute(0, 3, 2, 1).contiguous()
-        # b w h c
         x_out2 = self.hc(x_perm2)
         x_out21 = x_out2.permute(0, 3, 2, 1).contiguous()
 
@@ -239,8 +231,8 @@ class ContextPath(nn.Module):
     def __init__(self, *args, **kwargs):
         super(ContextPath, self).__init__()
         self.resnet = Resnet18()
-        self.conv16 = nn.Conv2d(256, 128, kernel_size=1, stride=1, padding=0)
-        # self.arm32 = AttentionRefinementModule(128, 128)
+        self.arm16 = AttentionRefinementModule(256,128)
+        self.arm32 = AttentionRefinementModule(128, 128)
         self.conv_head32 = ConvBNReLU(128, 128, ks=3, stride=1, padding=1)
         self.conv_head16 = ConvBNReLU(128, 128, ks=3, stride=1, padding=1)
         self.conv_avg = ConvBNReLU(512, 128, ks=1, stride=1, padding=0)
@@ -252,15 +244,15 @@ class ContextPath(nn.Module):
 
     def forward(self, x):
         feat8, feat16, feat32 = self.resnet(x)
-        feat32_arm = self.aspp(feat32)
+        feat32_aspp = self.aspp(feat32)
+        feat32_arm = self.arm32(feat32_aspp)
         feat32_up = self.up32(feat32_arm)
         feat32_up = self.conv_head32(feat32_up)
 
-        feat16_conv = self.conv16(feat16)
-        feat16_sum = feat16_conv + feat32_up
+        feat16_arm = self.arm16(feat16)
+        feat16_sum = feat16_arm + feat32_up
         # 40 40 48 triplet 3 branches
         # contact -> 1*1
-        # 16 128 32 32
         feat16_tri = self.tri(feat16_sum)
         feat16_up = self.up16(feat16_tri)
         feat16_up = self.conv_head16(feat16_up)
@@ -319,10 +311,10 @@ class SpatialPath(nn.Module):
         return wd_params, nowd_params
 
 
-class BiSeNetV1_global2taspp_noffmarm_tri(nn.Module):
+class BiSeNetV1_global2taspp_noffm_tri(nn.Module):
 
     def __init__(self, n_classes, aux_mode='train', *args, **kwargs):
-        super(BiSeNetV1_global2taspp_noffmarm_tri, self).__init__()
+        super(BiSeNetV1_global2taspp_noffm_tri, self).__init__()
         self.cp = ContextPath()
         self.sp = SpatialPath()
         self.conv_out = BiSeNetOutput(128, 128, n_classes, up_factor=8)
@@ -371,7 +363,7 @@ class BiSeNetV1_global2taspp_noffmarm_tri(nn.Module):
 
 
 if __name__ == "__main__":
-    net = BiSeNetV1_global2taspp_noffmarm_tri(2)
+    net = BiSeNetV1_global2taspp_noffm_tri(2)
     net.cuda()
     net.eval()
     in_ten = torch.randn(16, 3, 512, 512).cuda()

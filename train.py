@@ -17,9 +17,10 @@ from lib.models.bisenetv1 import BiSeNetV1
 from lib.models.bisenetv2 import BiSeNetV2
 from lib.models.bisenetv1_noarm_global2taspp import BiSeNetV1_noarm_global2taspp
 from lib.models.bisenetv1_global2taspp import BiSeNetV1_global2taspp
-from lib.models.bisenetv1_global2taspp_ffm2atten import BiSeNetV1_global2taspp_ffm2atten
+from lib.models.bisenetv1_global2taspp_noffm import BiSeNetV1_global2taspp_noffm
 from lib.models.bisenetv1_global2taspp_noffmarm import BiSeNetV1_global2taspp_noffmarm
 from lib.models.bisenetv1_global2taspp_noffmarm_tri import BiSeNetV1_global2taspp_noffmarm_tri
+from lib.models.bisenetv1_global2taspp_noffm_tri import BiSeNetV1_global2taspp_noffm_tri
 
 from torch.optim.lr_scheduler import PolynomialLR
 from torch.nn.modules.loss import CrossEntropyLoss
@@ -33,7 +34,7 @@ from utils.save_weight import save_weights
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str,
-                    default='bisenetv1_global2taspp_noffmarm_tri', help='model name')
+                    default='bisenetv1_global2taspp', help='model name')
 # D:\\data\\Crack_Forest_paddle\\Crack_Forest_paddle
 # /home/user/data/lumianliefeng/Crack_Forest_paddle
 # /home/user/data/liefeng/Crack_paddle_255
@@ -44,9 +45,9 @@ parser.add_argument('--img_size', type=int,
 parser.add_argument('--num_classes', type=int,
                     default=2, help='output channel of network')
 parser.add_argument('--max_epochs', type=int,
-                    default=100, help='maximum epoch number to train')
+                    default=150, help='maximum epoch number to train')
 parser.add_argument('--batch_size', type=int,
-                    default=8, help='batch_size per gpu')
+                    default=16, help='batch_size per gpu')
 parser.add_argument('--base_lr', type=float,
                     default=0.01, help='segmentation network learning rate')
 parser.add_argument('--seed', type=int,
@@ -102,12 +103,15 @@ if __name__ == "__main__":
             model = BiSeNetV1_noarm_global2taspp(args.num_classes)
         elif args.model == 'bisenetv1_global2taspp':
             model = BiSeNetV1_global2taspp(args.num_classes)
+        elif args.model == 'bisenetv1_global2taspp_noffm':
+            model = BiSeNetV1_global2taspp_noffm(args.num_classes)
         elif args.model == 'bisenetv1_global2taspp_noffmarm':
             model = BiSeNetV1_global2taspp_noffmarm(args.num_classes)
         elif args.model == 'bisenetv1_global2taspp_noffmarm_tri':
             model = BiSeNetV1_global2taspp_noffmarm_tri(args.num_classes)
-        elif args.model == 'bisenetv1_global2taspp_ffm2atten':
-            model = BiSeNetV1_global2taspp_ffm2atten(args.num_classes)
+        elif args.model == 'bisenetv1_global2taspp_noffm_tri':
+            model = BiSeNetV1_global2taspp_noffm_tri(args.num_classes)
+
         else:
             raise KeyError("unknown model: {}".format(args.model))
         losses = [OhemCrossEntropyLoss(), OhemCrossEntropyLoss(), OhemCrossEntropyLoss()]

@@ -10,10 +10,14 @@ from lib.models.bisenetv2 import BiSeNetV2
 from lib.models.bisenetv1_noarm_global2taspp import BiSeNetV1_noarm_global2taspp
 from lib.models.bisenetv1_global2taspp_ffm2atten import BiSeNetV1_global2taspp_ffm2atten
 from lib.models.bisenetv1_global2taspp import BiSeNetV1_global2taspp
+from lib.models.bisenetv1_global2taspp_noffm import BiSeNetV1_global2taspp_noffm
+from lib.models.bisenetv1_global2taspp_noffmarm_tri import BiSeNetV1_global2taspp_noffmarm_tri
+from lib.models.bisenetv1_global2taspp_noffm_tri import BiSeNetV1_global2taspp_noffm_tri
+from lib.models.bisenetv1_global2taspp_noffm_tri import TripletAttention
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str,
-                    default='bisenetv1_global2taspp_ffm2atten', help='model name')
+                    default='bisenetv1_global2taspp_noffm_tri', help='model name')
 parser.add_argument('--img_size', type=tuple,
                     default=(512, 512), help='input patch size of network input')
 parser.add_argument('--channels', type=int,
@@ -33,10 +37,18 @@ if __name__ == '__main__':
         model = BiSeNetV1_global2taspp(args.num_classes)
     elif args.model == 'bisenetv1_global2taspp_ffm2atten':
         model = BiSeNetV1_global2taspp_ffm2atten(args.num_classes)
+    elif args.model == 'bisenetv1_global2taspp_noffm':
+        model = BiSeNetV1_global2taspp_noffm(args.num_classes)
+    elif args.model == 'bisenetv1_global2taspp_noffmarm_tri':
+        model = BiSeNetV1_global2taspp_noffmarm_tri(args.num_classes)
+    elif args.model == 'bisenetv1_global2taspp_noffm_tri':
+        model = BiSeNetV1_global2taspp_noffm_tri(args.num_classes)
     elif args.model == 'bisenetv1_noarm_global2taspp':
         model = BiSeNetV1_noarm_global2taspp(args.num_classes)
     elif args.model == 'bisenetv2':
         model = BiSeNetV2(args.num_classes)
+    elif args.model == 'tri':
+        model = TripletAttention()
     else:
         model = None
         raise KeyError("unknown model: {}".format(args.model))
