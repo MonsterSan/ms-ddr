@@ -21,14 +21,14 @@ class AlignedModule(nn.Module):
         self.flow_make = nn.Conv2d(outplane * 2, 2, kernel_size=kernel_size, padding=1, bias=False)
 
     def forward(self, low_feature, h_feature):
-        h_feature_orign = h_feature
+        #h_feature_orign = h_feature
         h, w = low_feature.size()[2:]
         size = (h, w)
-        low_feature = self.down_l(low_feature)
-        h_feature = self.down_h(h_feature)
-        h_feature = F.upsample(h_feature, size=size, mode="bilinear", align_corners=True)
+        #low_feature = self.down_l(low_feature)
+        #h_feature = self.down_h(h_feature)
+        #h_feature = F.upsample(h_feature, size=size, mode="bilinear", align_corners=True)
         flow = self.flow_make(torch.cat([h_feature, low_feature], 1))
-        h_feature = self.flow_warp(h_feature_orign, flow, size=size)
+        h_feature = self.flow_warp(h_feature, flow, size=size)
 
         return h_feature
 
