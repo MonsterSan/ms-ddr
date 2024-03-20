@@ -16,7 +16,7 @@ class MixAtten(nn.Module):
     def __init__(self, inc):
         super(MixAtten, self).__init__()
 
-        self.conv1 = nn.Conv2d(2, 1, 1, 1, 0, bias=False)
+        self.conv1 = nn.Conv2d(2*inc, inc, 1, 1, 0, bias=False)
         self.bn = BatchNorm2d(inc)
 
     def forward(self, x, y):
