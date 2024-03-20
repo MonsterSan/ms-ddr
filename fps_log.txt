@@ -270,3 +270,10 @@
 [15:09:07.544] fps: 229.40805171009964
 [15:09:12.920] Namespace(model='ddrnet_silm', img_size=(512, 512), channels=3, num_classes=2)
 [15:09:52.376] fps: 253.62010717980468
+[19:26:44.529] Namespace(model='bisenetv1_global2taspp_noarm_ffm2fam', img_size=(512, 512), channels=3, num_classes=2)
+[19:27:55.065] fps: 141.83531229244795
+[19:28:28.427] Namespace(model='bisenetv1_global2taspp_noarm_ffm2fam', img_size=(512, 512), channels=3, num_classes=2)
+[19:29:17.328] Namespace(model='bisenetv1_global2taspp_noarm_ffm2famv2', img_size=(512, 512), channels=3, num_classes=2)
+[19:30:27.859] fps: 141.85003422923998
+[19:38:01.687] Namespace(model='ddrnet_silm', img_size=(512, 512), channels=3, num_classes=2)
+[19:38:41.423] fps: 251.85097349078137

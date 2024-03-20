@@ -14,7 +14,7 @@ from lib.models.bisenetv1_global2taspp_noffmarm_tri import BiSeNetV1_global2tasp
 from lib.models.bisenetv1_global2taspp_noffm_tri import BiSeNetV1_global2taspp_noffm_tri
 from lib.models.bisenetv1_global2taspp_noffm_tri import TripletAttention
 from lib.models.bisenetv1_global2taspp_noffm_arm2mix import BiSeNetV1_global2taspp_noffm_arm2mix
-
+from lib.models.bisenetv1_global2taspp_noarm_ffm2famv2 import BiSeNetV1_global2taspp_noarm_ffm2famv2
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str,
                     default='ddrnet_silm', help='model name')
@@ -45,6 +45,9 @@ if __name__ == '__main__':
         model = BiSeNetV1_global2taspp_noffm_tri(args.num_classes)
     elif args.model == 'bisenetv1_noarm_global2taspp':
         model = BiSeNetV1_noarm_global2taspp(args.num_classes)
+    elif args.model == 'bisenetv1_global2taspp_noarm_ffm2famv2':
+        model = BiSeNetV1_global2taspp_noarm_ffm2famv2(args.num_classes)
+
     elif args.model == 'bisenetv2':
         model = BiSeNetV2(args.num_classes)
     elif args.model == 'tri':
