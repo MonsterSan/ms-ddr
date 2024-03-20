@@ -18,12 +18,16 @@ class AlignedModule(nn.Module):
         super(AlignedModule, self).__init__()
         self.down_h = nn.Conv2d(inplane, outplane, 1, bias=False)
         self.down_l = nn.Conv2d(inplane, outplane, 1, bias=False)
-        self.flow_make = nn.Conv2d(outplane * 2, 2, kernel_size=kernel_size, padding=1, bias=False)
+        self.flow_make = nn.Conv2d(4, 2, kernel_size=kernel_size, padding=1, bias=False)
 
     def forward(self, low_feature, h_feature):
         h, w = low_feature.size()[2:]
         size = (h, w)
-        flow = self.flow_make(torch.cat([h_feature, low_feature], 1))
+        max_low,_ = torch.max(low_feature,dim=1,keepdim=True)
+        mean_low = torch.mean(low_feature,dim=1,keepdim=True)
+        max_high,_ = torch.max(h_feature,dim=1,keepdim=True)
+        mean_high = torch.mean(h_feature,dim=1,keepdim=True)
+        flow = self.flow_make(torch.cat([max_low,max_high,mean_low,mean_high], 1))
         h_feature = self.flow_warp(h_feature, flow, size=size)
 
         return h_feature
@@ -308,10 +312,10 @@ class SpatialPath(nn.Module):
         return wd_params, nowd_params
 
 
-class BiSeNetV1_global2taspp_noarm_ffm2fam(nn.Module):
+class BiSeNetV1_global2taspp_noarm_ffm2famv2(nn.Module):
 
     def __init__(self, n_classes, aux_mode='train', *args, **kwargs):
-        super(BiSeNetV1_global2taspp_noarm_ffm2fam, self).__init__()
+        super(BiSeNetV1_global2taspp_noarm_ffm2famv2, self).__init__()
         self.cp = ContextPath()
         self.sp = SpatialPath()
         self.conv_out = BiSeNetOutput(128, 128, n_classes, up_factor=8)
@@ -363,7 +367,7 @@ class BiSeNetV1_global2taspp_noarm_ffm2fam(nn.Module):
 
 
 if __name__ == "__main__":
-    net = BiSeNetV1_global2taspp_noarm_ffm2fam(2)
+    net = BiSeNetV1_global2taspp_noarm_ffm2famv2(2)
     net.cuda()
     net.eval()
     in_ten = torch.randn(16, 3, 512, 512).cuda()
