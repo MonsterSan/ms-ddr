@@ -16,15 +16,16 @@ from lib.models.ddrnet import ddrnet_silm, ddrnet_23
 from lib.models.bisenetv1 import BiSeNetV1
 from lib.models.bisenetv2 import BiSeNetV2
 from lib.models.bisenetv1_global2taspp import BiSeNetV1_global2taspp
-from lib.models.bisenetv1_global2taspp_ffm2fam import BiSeNetV1_global2taspp_ffm2fam
+#from lib.models.bisenetv1_global2taspp_ffm2fam import BiSeNetV1_global2taspp_ffm2fam
 
 from lib.models.bisenetv1_global2taspp_ffm2tri import BiSeNetV1_global2taspp_ffm2tri
-from lib.models.bisenetv1_global2taspp_ffm2fam import BiSeNetV1_global2taspp_ffm2fam
+#from lib.models.bisenetv1_global2taspp_ffm2fam import BiSeNetV1_global2taspp_ffm2fam
 from lib.models.bisenetv1_global2taspp_ffm2fammul import BiSeNetV1_global2taspp_ffm2fammul
 
 from torch.optim.lr_scheduler import PolynomialLR
 from torch.nn.modules.loss import CrossEntropyLoss
 from lib.losses.ohem_cross_entropy_loss import OhemCrossEntropyLoss
+from lib.losses.canny_loss import CannyLoss
 
 from lib.utils.loss_avg_meter import LossAverageMeter
 from lib.utils.confusion_matrix import ConfusionMatrix
@@ -105,14 +106,14 @@ if __name__ == "__main__":
             model = BiSeNetV1_global2taspp(args.num_classes)
         elif args.model == 'bisenetv1_global2taspp_ffm2tri':
             model = BiSeNetV1_global2taspp_ffm2tri(args.num_classes)
-        elif args.model == 'bisenetv1_global2taspp_ffm2fam':
-            model = BiSeNetV1_global2taspp_ffm2fam(args.num_classes)
+#        elif args.model == 'bisenetv1_global2taspp_ffm2fam':
+#            model = BiSeNetV1_global2taspp_ffm2fam(args.num_classes)
         elif args.model == 'bisenetv1_global2taspp_ffm2fammul':
             model = BiSeNetV1_global2taspp_ffm2fammul(args.num_classes)
         else:
             raise KeyError("unknown model: {}".format(args.model))
-        losses = [OhemCrossEntropyLoss(), OhemCrossEntropyLoss(), OhemCrossEntropyLoss()]
-        loss_weights = [1, 1, 1]
+        losses = [OhemCrossEntropyLoss(), OhemCrossEntropyLoss(), OhemCrossEntropyLoss(), CannyLoss()]
+        loss_weights = [1, 1, 1, 1]
     else:
         model = None
         raise KeyError("unknown model: {}".format(args.model))

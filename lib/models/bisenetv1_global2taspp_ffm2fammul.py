@@ -310,6 +310,7 @@ class BiSeNetV1_global2taspp_ffm2fammul(nn.Module):
         super(BiSeNetV1_global2taspp_ffm2fammul, self).__init__()
         self.cp = ContextPath()
         self.sp = SpatialPath()
+        self.canny_out = BiSeNetOutput(128,128,n_classes,up_factor=8)
         self.conv_out = BiSeNetOutput(128, 128, n_classes, up_factor=8)
         self.aux_mode = aux_mode
         if self.aux_mode == 'train':
@@ -323,6 +324,8 @@ class BiSeNetV1_global2taspp_ffm2fammul(nn.Module):
         H, W = x.size()[2:]
         feat_cp8, feat_cp16 = self.cp(x)
         feat_sp = self.sp(x)
+        canny_out = self.canny_out(feat_sp)
+
         feat_cp8, feat_sp = self.fam(feat_cp8, feat_sp)
         feat_fuse = feat_sp + feat_cp8
 
@@ -330,7 +333,7 @@ class BiSeNetV1_global2taspp_ffm2fammul(nn.Module):
         if self.aux_mode == 'train':
             feat_out16 = self.conv_out16(feat_cp8)
             feat_out32 = self.conv_out32(feat_cp16)
-            return feat_out, feat_out16, feat_out32
+            return feat_out, feat_out16, feat_out32, canny_out
         elif self.aux_mode == 'eval':
             return feat_out,
         elif self.aux_mode == 'pred':
@@ -363,9 +366,10 @@ if __name__ == "__main__":
     net.cuda()
     net.eval()
     in_ten = torch.randn(16, 3, 512, 512).cuda()
-    out, out16, out32 = net(in_ten)
+    out, out16, out32, canny_out = net(in_ten)
     print(out.shape)
     print(out16.shape)
     print(out32.shape)
+    print(canny_out.shape)
 
     net.get_params()
