@@ -1,38 +1,37 @@
 import torch
 import torch.nn as nn
 import cv2
-import numpy as np
 
 
-def canny(images):
-    for i in range(images.shape[0]):
-        image = images[i, 0, :, :]
-        image = image // 0.5000001 * 255   # 二值化
-        image_2 = image.cpu().detach().numpy()
-        image_2 = image_2.astype(np.uint8)
-        img = cv2.Canny(image_2, 30, 150)
-        img = img.astype(np.float32)
-        img = torch.from_numpy(img)
-        img.type = torch.float32
-        if i != 0:
-            if i != 1:
-                img_final = torch.cat((img_final, img), 0)
-            else:
-                img_final = torch.cat((img_first, img), 0)
-        else:
-            img_first = img
-    return img_final / 255
+def pred_convert(pred):
+    img_list = []
+    for i in range(pred.shape[0]):
+        img = pred[i]
+        img = img.argmax(0)
+        img = img.unsqueeze(0)
+        img_list.append(img)
+    res = torch.cat(img_list, dim=0)
+    return res
+
+def canny(tensors):
+    list = []
+    for tensor in tensors:
+        numpy_image = tensor.cpu().numpy()
+        edges = cv2.Canny((numpy_image * 255).astype('uint8'), 100, 200)
+        edges_tensor = torch.from_numpy(edges / 255.0).float()
+        edges_tensor = edges_tensor.unsqueeze(0)
+        list.append(edges_tensor)
+    res = torch.cat(list, dim=0)
+    return res
+
 
 class CannyLoss(nn.Module):
     def __init__(self):
         super(CannyLoss, self).__init__()
-        self.loss = nn.BCELoss(size_average=True)
+        self.loss = nn.CrossEntropyLoss()
 
     def forward(self, pred, labels):
+        pred = pred_convert(pred)
         pred = canny(pred)
         labels = canny(labels)
-        return self.loss(pred, labels)
-
-
-
-
+        return self.loss(pred,labels)
