@@ -12,30 +12,37 @@ from lib.models.resnet import Resnet18
 from torch.nn import BatchNorm2d
 
 
-class UMF(nn.Module):
-    def __init__(self, inc):
-        super(UMF, self).__init__()
-        self.conv = nn.Conv2d(4 * inc, 2 * inc, 1, 1, 0, bias=False)
-        self.avgpooling_sp = nn.AdaptiveAvgPool2d(1)
-        self.avgpooling_cp = nn.AdaptiveAvgPool2d(1)
-        self.max_pooling_sp = nn.AdaptiveMaxPool2d(1)
-        self.max_pooling_cp = nn.AdaptiveMaxPool2d(1)
+class AlignedModule(nn.Module):
+    def __init__(self):
+        super(AlignedModule, self).__init__()
+        self.conv = nn.Conv2d(2, 1, kernel_size=7, padding=3, bias=False)
+        self.bn = nn.BatchNorm2d(1)
 
     def forward(self, cp, sp):
-        global_sp = self.avgpooling_sp(sp)
-        max_sp = self.max_pooling_sp(sp)
-        global_cp = self.avgpooling_cp(cp)
-        max_cp = self.max_pooling_cp(cp)
-        all_atten = torch.cat([global_sp, max_sp, global_cp, max_cp], dim=1)
-        atten = self.conv(all_atten)
+        feature = cp*sp
+        max_feature, _ = torch.max(feature, dim=1, keepdim=True)
+        mean_feature = torch.mean(feature, dim=1, keepdim=True)
+        atten = torch.cat([mean_feature, max_feature], dim=1)
+        atten = self.conv(atten)
         atten = atten.sigmoid()
-        w1, w2 = torch.split(atten, split_size_or_sections=128, dim=1)
-        return w1 * sp + w2 * cp
+        return cp * atten, sp * (1 - atten)
+
+    # bisenetv1_global2taspp_ffm2fam_20240321_130415
+    # def __init__(self):
+    #    super(AlignedModule, self).__init__()
+    #    self.conv = nn.Conv2d(256, 1, kernel_size=3, padding=1)
+    #    self.bn = nn.BatchNorm2d(1)
+
+    # def forward(self, cp, sp):
+    #    feature = torch.cat([cp, sp], dim=1)
+    #    atten = self.bn(self.conv(feature))
+    #    atten = atten.sigmoid()
+    #    return cp * atten
 
     def get_params(self):
         wd_params, nowd_params = [], []
         for name, module in self.named_modules():
-            if isinstance(module, (nn.Linear, nn.Conv2d)):
+            if isinstance(module, nn.Linear) or isinstance(module, nn.Conv2d):
                 wd_params.append(module.weight)
                 if not module.bias is None:
                     nowd_params.append(module.bias)
@@ -238,8 +245,8 @@ class ContextPath(nn.Module):
         feat32_up = self.up32(feat32_arm)
         feat32_up = self.conv_head32(feat32_up)
 
-        feat16_conv = self.arm16(feat16)
-        feat16_sum = feat16_conv + feat32_up
+        feat16_arm = self.arm16(feat16)
+        feat16_sum = feat16_arm + feat32_up
         feat16_up = self.up16(feat16_sum)
         feat16_up = self.conv_head16(feat16_up)
 
@@ -297,10 +304,10 @@ class SpatialPath(nn.Module):
         return wd_params, nowd_params
 
 
-class BiSeNetV1_global2taspp_ffm2umf(nn.Module):
+class BiSeNetV1_global2taspp_ffm2fammul(nn.Module):
 
     def __init__(self, n_classes, aux_mode='train', *args, **kwargs):
-        super(BiSeNetV1_global2taspp_ffm2umf, self).__init__()
+        super(BiSeNetV1_global2taspp_ffm2fammul, self).__init__()
         self.cp = ContextPath()
         self.sp = SpatialPath()
         self.conv_out = BiSeNetOutput(128, 128, n_classes, up_factor=8)
@@ -308,7 +315,7 @@ class BiSeNetV1_global2taspp_ffm2umf(nn.Module):
         if self.aux_mode == 'train':
             self.conv_out16 = BiSeNetOutput(128, 64, n_classes, up_factor=8)
             self.conv_out32 = BiSeNetOutput(128, 64, n_classes, up_factor=16)
-        self.umf = UMF(128)
+        self.fam = AlignedModule()
         # return right
         self.init_weight()
 
@@ -316,7 +323,8 @@ class BiSeNetV1_global2taspp_ffm2umf(nn.Module):
         H, W = x.size()[2:]
         feat_cp8, feat_cp16 = self.cp(x)
         feat_sp = self.sp(x)
-        feat_fuse = self.umf(feat_cp8, feat_sp)
+        feat_cp8, feat_sp = self.fam(feat_cp8, feat_sp)
+        feat_fuse = feat_sp + feat_cp8
 
         feat_out = self.conv_out(feat_fuse)
         if self.aux_mode == 'train':
@@ -351,7 +359,7 @@ class BiSeNetV1_global2taspp_ffm2umf(nn.Module):
 
 
 if __name__ == "__main__":
-    net = BiSeNetV1_global2taspp_ffm2umf(2)
+    net = BiSeNetV1_global2taspp_ffm2fammul(2)
     net.cuda()
     net.eval()
     in_ten = torch.randn(16, 3, 512, 512).cuda()

@@ -174,7 +174,7 @@ class AttentionRefinementModule(nn.Module):
         atten = self.bn_atten(atten)
         #  atten = self.sigmoid_atten(atten)
         atten = atten.sigmoid()
-        out = torch.mul(feat, atten)
+        out = feat*atten
         return out
 
     def init_weight(self):
@@ -201,7 +201,7 @@ class ContextPath(nn.Module):
         feat8, feat16, feat32 = self.resnet(x)
         feat32_aspp = self.aspp(feat32)
         feat32_arm = self.arm32(feat32_aspp)
-        feat32_up = self.up32(feat32_arm)
+        feat32_up = self.up32(feat32_aspp)
         feat32_up = self.conv_head32(feat32_up)
 
         feat16_conv = self.arm16(feat16)
@@ -275,20 +275,25 @@ class FeatureFusionModule(nn.Module):
                               padding=0,
                               bias=False)
         self.bn = nn.BatchNorm2d(out_chan)
+        self.conv1 = nn.Conv2d(out_chan,out_chan//4,kernel_size = 1,stride = 1,padding = 0,bias = False)
+        self.conv2 = nn.Conv2d(out_chan//4,out_chan,kernel_size = 1,stride = 1,padding = 0,bias = False)
+        self.relu = nn.ReLU(inplace=True)
         self.init_weight()
 
     def forward(self, fsp, fcp):
         fcat = torch.cat([fsp, fcp], dim=1)
         feat = self.convblk(fcat)
         atten = torch.mean(feat, dim=(2, 3), keepdim=True)
-        atten = self.conv(atten)
-        atten = self.bn(atten)
-        #  atten = self.conv1(atten)
-        #  atten = self.relu(atten)
-        #  atten = self.conv2(atten)
+        #atten = self.conv(atten)
+        #atten = self.bn(atten)
+
+        atten = self.conv1(atten)
+        atten = self.relu(atten)
+        atten = self.conv2(atten)
         atten = atten.sigmoid()
         feat_atten = torch.mul(feat, atten)
         feat_out = feat_atten + feat
+
         return feat_out
 
     def init_weight(self):

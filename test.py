@@ -11,12 +11,11 @@ from torch.utils.data import DataLoader
 from lib.models.ddrnet import ddrnet_silm
 from lib.models.bisenetv1 import BiSeNetV1
 from lib.models.bisenetv2 import BiSeNetV2
-from lib.models.bisenetv1_noarm_global2taspp import BiSeNetV1_noarm_global2taspp
-from lib.models.bisenetv1_global2taspp import BiSeNetV1_global2taspp
-from lib.models.bisenetv1_global2taspp_noffmarm_tri import BiSeNetV1_global2taspp_noffmarm_tri
-from lib.models.bisenetv1_global2taspp_noffm import BiSeNetV1_global2taspp_noffm
-from lib.models.bisenetv1_global2taspp_noffm_tri import BiSeNetV1_global2taspp_noffm_tri
+from lib.models.bisenetv1_global2taspp_ffm2tri import BiSeNetV1_global2taspp_ffm2tri
 from lib.models.bisenetv1_global2taspp_noarm_ffm2fam import BiSeNetV1_global2taspp_noarm_ffm2fam
+
+from lib.models.bisenetv1_global2taspp_ffm2fam import BiSeNetV1_global2taspp_ffm2fam
+from lib.models.bisenetv1_global2taspp import BiSeNetV1_global2taspp
 
 from torch.nn.modules.loss import CrossEntropyLoss
 from lib.losses.ohem_cross_entropy_loss import OhemCrossEntropyLoss
@@ -28,7 +27,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str,
                     default='bisenetv1_global2taspp_noarm_ffm2fam', help='model name')
 parser.add_argument('--log_path', type=str,
-                    default='./run/bisenetv1_global2taspp_noarm_ffm2fam_20240320_162643', help='log path')
+                    default='./run/bisenetv1_global2taspp_ffm2tri_20240322_101252', help='log path')
 parser.add_argument('--checkpoint_type', type=str,
                     default='best_miou', help="best_miou or last or min_loss")
 # D:\\data\\Crack_Forest_paddle\\Crack_Forest_paddle
@@ -61,25 +60,20 @@ if __name__ == '__main__':
         model = ddrnet_silm(args.num_classes)
         losses = [OhemCrossEntropyLoss()]
         loss_weights = [1]
-    elif args.model == 'bisenetv2':
+    elif args.model == 'bisnetv2':
         model = BiSeNetV2(args.num_classes)
         losses = [CrossEntropyLoss(), CrossEntropyLoss(), CrossEntropyLoss(), CrossEntropyLoss(), CrossEntropyLoss()]
         loss_weights = [1, 1, 1, 1, 1]
     elif 'bisenetv1' in args.model:
         if args.model == 'bisenetv1':
             model = BiSeNetV1(args.num_classes)
-        elif args.model == 'bisenetv1_noarm_global2taspp':
-            model = BiSeNetV1_noarm_global2taspp(args.num_classes)
-        elif args.model == 'bisenetv1_global2taspp_noffm':
-            model = BiSeNetV1_global2taspp_noffm(args.num_classes)
-        elif args.model == 'bisenetv1_global2taspp_noarm_ffm2fam':
-            model = BiSeNetV1_global2taspp_noarm_ffm2fam(args.num_classes)
-        elif args.model == 'bisenetv1_global2taspp_noffmarm_tri':
-            model = BiSeNetV1_global2taspp_noffmarm_tri(args.num_classes)
-        elif args.model == 'bisenetv1_global2taspp':
+        elif args.model == 'bisenetv1_global2taspp_ffm2tri':
+            model = BiSeNetV1_global2taspp_ffm2tri(args.num_classes)
+        elif args.model == 'bisenetv1_global2taspp_ffm2fam':
+            model = BiSeNetV1_global2taspp_ffm2fam(args.num_classes)
+        elif args.model =='bisenetv1_global2taspp':
             model = BiSeNetV1_global2taspp(args.num_classes)
-        elif args.model == 'bisenetv1_global2taspp_noffm_tri':
-            model = BiSeNetV1_global2taspp_noffm_tri(args.num_classes)
+
         else:
             raise KeyError("unknown model: {}".format(args.model))
 

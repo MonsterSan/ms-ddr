@@ -16,9 +16,11 @@ from lib.models.ddrnet import ddrnet_silm, ddrnet_23
 from lib.models.bisenetv1 import BiSeNetV1
 from lib.models.bisenetv2 import BiSeNetV2
 from lib.models.bisenetv1_global2taspp import BiSeNetV1_global2taspp
-from lib.models.bisenetv1_global2taspp_noarm_ffm2fam import BiSeNetV1_global2taspp_noarm_ffm2fam
-from lib.models.bisenetv1_global2taspp_noarm_ffm2atten import BiSeNetV1_global2taspp_noarm_ffm2atten
-from lib.models.bisenetv1_global2taspp_ffm2umf import BiSeNetV1_global2taspp_ffm2umf
+from lib.models.bisenetv1_global2taspp_ffm2fam import BiSeNetV1_global2taspp_ffm2fam
+
+from lib.models.bisenetv1_global2taspp_ffm2tri import BiSeNetV1_global2taspp_ffm2tri
+from lib.models.bisenetv1_global2taspp_ffm2fam import BiSeNetV1_global2taspp_ffm2fam
+from lib.models.bisenetv1_global2taspp_ffm2fammul import BiSeNetV1_global2taspp_ffm2fammul
 
 from torch.optim.lr_scheduler import PolynomialLR
 from torch.nn.modules.loss import CrossEntropyLoss
@@ -32,7 +34,7 @@ from utils.save_weight import save_weights
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str,
-                    default='bisenetv1_global2taspp_ffm2umf', help='model name')
+                    default='bisenetv1_global2taspp_ffm2fammul', help='model name')
 # D:\\data\\Crack_Forest_paddle\\Crack_Forest_paddle
 # /home/user/data/lumianliefeng/Crack_Forest_paddle
 # /home/user/data/liefeng/Crack_paddle_255
@@ -64,6 +66,8 @@ def worker_init_fn(worker_id):
 
 
 if __name__ == "__main__":
+    os.environ["CUDA_VISIBLE_DEVICES"]= "0"
+
     # set seed
     random.seed(args.seed)
     np.random.seed(args.seed)
@@ -99,12 +103,12 @@ if __name__ == "__main__":
             model = BiSeNetV1(args.num_classes)
         elif args.model == 'bisenetv1_global2taspp':
             model = BiSeNetV1_global2taspp(args.num_classes)
-        elif args.model == 'bisenetv1_global2taspp_noarm_ffm2fam':
-            model = BiSeNetV1_global2taspp_noarm_ffm2fam(args.num_classes)
-        elif args.model == 'bisenetv1_global2taspp_ffm2umf':
-            model = BiSeNetV1_global2taspp_ffm2umf(args.num_classes)
-        elif args.model == 'bisenetv1_global2taspp_noarm_ffm2atten':
-            model = BiSeNetV1_global2taspp_noarm_ffm2atten(args.num_classes)
+        elif args.model == 'bisenetv1_global2taspp_ffm2tri':
+            model = BiSeNetV1_global2taspp_ffm2tri(args.num_classes)
+        elif args.model == 'bisenetv1_global2taspp_ffm2fam':
+            model = BiSeNetV1_global2taspp_ffm2fam(args.num_classes)
+        elif args.model == 'bisenetv1_global2taspp_ffm2fammul':
+            model = BiSeNetV1_global2taspp_ffm2fammul(args.num_classes)
         else:
             raise KeyError("unknown model: {}".format(args.model))
         losses = [OhemCrossEntropyLoss(), OhemCrossEntropyLoss(), OhemCrossEntropyLoss()]
