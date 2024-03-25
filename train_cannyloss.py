@@ -172,11 +172,11 @@ if __name__ == "__main__":
                 loss += loss_list[i]
             if args.pred_cannyloss:
                 Sp_Canny = CannyLoss()
-                Pred_Canny = CannyLoss()
+                Pred_Canny = CannyLoss(reduction=True)
                 sp_canny_loss = Sp_Canny(losses[-1], label_batch.long())
                 loss += sp_canny_loss
-                pred_canny_loss = Pred_Canny(outputs[0],label_batch.long())
-                print(loss.shape)
+                pred_canny_loss = Pred_Canny(outputs[0], label_batch.long())
+                print(pred_canny_loss)
 
 
             train_losses.update(main_loss.item(), image_batch.shape[0])

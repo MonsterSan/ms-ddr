@@ -27,9 +27,12 @@ def canny(tensors):
 
 
 class CannyLoss(nn.Module):
-    def __init__(self):
+    def __init__(self, reduction=False):
         super(CannyLoss, self).__init__()
-        self.loss = nn.CrossEntropyLoss()
+        if reduction:
+            self.loss = nn.CrossEntropyLoss(reduction="none")
+        else:
+            self.loss = nn.CrossEntropyLoss()
 
     def forward(self, pred, labels):
         pred = pred_convert(pred)
