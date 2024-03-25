@@ -35,7 +35,7 @@ from utils.save_weight import save_weights
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str,
-                    default='bisenetv1_global2taspp_ffm2fammul', help='model name')
+                    default='bisenetv1_global2taspp', help='model name')
 # D:\\data\\Crack_Forest_paddle\\Crack_Forest_paddle
 # /home/user/data/lumianliefeng/Crack_Forest_paddle
 # /home/user/data/liefeng/Crack_paddle_255
@@ -167,6 +167,7 @@ if __name__ == "__main__":
             loss = main_loss.clone()
             for i in range(1, len(loss_list)):
                 loss += loss_list[i]
+            canny_loss = loss_list[-1]
             train_losses.update(main_loss.item(), image_batch.shape[0])
             optimizer.zero_grad()
             loss.backward()
@@ -184,8 +185,8 @@ if __name__ == "__main__":
 
             if iter_num % args.log_iters == 0:
                 logging.info(
-                    '[train]iteration %d / %d\tloss: %f\tmain_loss:%f\tcurrent lr:%f\tremaining time : %d minutes  %d seconds'
-                    % (iter_num, max_iterations, loss.item(), main_loss.item(), current_lr, remaining_time_minutes,
+                    '[train]iteration %d / %d\tloss: %f\tmain_loss:%f\tcanny_loss:%f\tcurrent lr:%f\tremaining time : %d minutes  %d seconds'
+                    % (iter_num, max_iterations, loss.item(), main_loss.item(),canny_loss.item() , current_lr, remaining_time_minutes,
                        remaining_time_seconds))
 
         trainmiou = save_log(train_confmat, train_losses, trainlog_path, epoch)

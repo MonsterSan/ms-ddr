@@ -13,6 +13,7 @@ def pred_convert(pred):
     res = torch.cat(img_list, dim=0)
     return res
 
+
 def canny(tensors):
     list = []
     for tensor in tensors:
@@ -34,4 +35,4 @@ class CannyLoss(nn.Module):
         pred = pred_convert(pred)
         pred = canny(pred)
         labels = canny(labels)
-        return self.loss(pred,labels)
+        return self.loss(pred, labels)
