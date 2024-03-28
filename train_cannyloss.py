@@ -35,7 +35,7 @@ from utils.save_weight import save_weights
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str,
-                    default='bisenetv1_global2taspp', help='model name')
+                    default='bisenetv1_global2taspp_ffm2fammul', help='model name')
 # D:\\data\\Crack_Forest_paddle\\Crack_Forest_paddle
 # /home/user/data/lumianliefeng/Crack_Forest_paddle
 # /home/user/data/liefeng/Crack_paddle_255
@@ -69,7 +69,7 @@ def worker_init_fn(worker_id):
 
 
 if __name__ == "__main__":
-    os.environ["CUDA_VISIBLE_DEVICES"]= "0"
+    os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 
     # set seed
     random.seed(args.seed)
@@ -106,16 +106,12 @@ if __name__ == "__main__":
             model = BiSeNetV1(args.num_classes)
         elif args.model == 'bisenetv1_global2taspp':
             model = BiSeNetV1_global2taspp(args.num_classes)
-        elif args.model == 'bisenetv1_global2taspp_ffm2tri':
-            model = BiSeNetV1_global2taspp_ffm2tri(args.num_classes)
-#        elif args.model == 'bisenetv1_global2taspp_ffm2fam':
-#            model = BiSeNetV1_global2taspp_ffm2fam(args.num_classes)
         elif args.model == 'bisenetv1_global2taspp_ffm2fammul':
             model = BiSeNetV1_global2taspp_ffm2fammul(args.num_classes)
         else:
             raise KeyError("unknown model: {}".format(args.model))
         losses = [OhemCrossEntropyLoss(), OhemCrossEntropyLoss(), OhemCrossEntropyLoss()]
-        loss_weights = [1, 1, 1, 1]
+        loss_weights = [1, 1, 1, 1, 1]
     else:
         model = None
         raise KeyError("unknown model: {}".format(args.model))
@@ -149,7 +145,7 @@ if __name__ == "__main__":
     iter_num = 0
     min_loss = 100
     best_miou = 0
-    canny_loss = torch.tensor([0])
+    all_canny_loss = torch.tensor([0])
 
     # train
     start_time = time.time()
@@ -172,11 +168,11 @@ if __name__ == "__main__":
                 loss += loss_list[i]
             if args.pred_cannyloss:
                 Sp_Canny = CannyLoss()
-                Pred_Canny = CannyLoss(reduction=True)
-                sp_canny_loss = Sp_Canny(losses[-1], label_batch.long())
-                loss += sp_canny_loss
+                Pred_Canny = CannyLoss(output=True)
+                sp_canny_loss = Sp_Canny(outputs[-1], label_batch.long())
                 pred_canny_loss = Pred_Canny(outputs[0], label_batch.long())
-                print(pred_canny_loss)
+                all_canny_loss = 0.5 * sp_canny_loss + pred_canny_loss
+                loss += all_canny_loss
 
 
             train_losses.update(main_loss.item(), image_batch.shape[0])
@@ -197,7 +193,7 @@ if __name__ == "__main__":
             if iter_num % args.log_iters == 0:
                 logging.info(
                     '[train]iteration %d / %d\tloss: %f\tmain_loss:%f\tcanny_loss:%f\tcurrent lr:%f\tremaining time : %d minutes  %d seconds'
-                    % (iter_num, max_iterations, loss.item(), main_loss.item(),canny_loss.item() , current_lr, remaining_time_minutes,
+                    % (iter_num, max_iterations, loss.item(), main_loss.item(), all_canny_loss.item() , current_lr, remaining_time_minutes,
                        remaining_time_seconds))
 
         trainmiou = save_log(train_confmat, train_losses, trainlog_path, epoch)
@@ -222,7 +218,7 @@ if __name__ == "__main__":
 
                     val_confmat.update(label_batch.flatten(), outputs[0].argmax(1).flatten())
                     loss_list = [loss_weights[i] * losses[i](outputs[i], label_batch.long()) for i in
-                                 range(len(outputs))]
+                                 range(len(losses))]
                     main_loss = loss_list[0]
                     loss = main_loss
                     for i in range(1, len(loss_list)):

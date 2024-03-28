@@ -16,11 +16,8 @@ from lib.models.ddrnet import ddrnet_silm, ddrnet_23
 from lib.models.bisenetv1 import BiSeNetV1
 from lib.models.bisenetv2 import BiSeNetV2
 from lib.models.bisenetv1_global2taspp import BiSeNetV1_global2taspp
-#from lib.models.bisenetv1_global2taspp_ffm2fam import BiSeNetV1_global2taspp_ffm2fam
-
-from lib.models.bisenetv1_global2taspp_ffm2tri import BiSeNetV1_global2taspp_ffm2tri
-#from lib.models.bisenetv1_global2taspp_ffm2fam import BiSeNetV1_global2taspp_ffm2fam
 from lib.models.bisenetv1_global2taspp_ffm2fammul import BiSeNetV1_global2taspp_ffm2fammul
+from lib.models.bisenetv1_mul import BiSeNetV1_mul
 
 from torch.optim.lr_scheduler import PolynomialLR
 from torch.nn.modules.loss import CrossEntropyLoss
@@ -102,17 +99,15 @@ if __name__ == "__main__":
     elif 'bisenetv1' in args.model:
         if args.model == 'bisenetv1':
             model = BiSeNetV1(args.num_classes)
+        elif args.model == 'bisenetv1_mul':
+            model = BiSeNetV1_mul(args.num_classes)
         elif args.model == 'bisenetv1_global2taspp':
             model = BiSeNetV1_global2taspp(args.num_classes)
-        elif args.model == 'bisenetv1_global2taspp_ffm2tri':
-            model = BiSeNetV1_global2taspp_ffm2tri(args.num_classes)
-#        elif args.model == 'bisenetv1_global2taspp_ffm2fam':
-#            model = BiSeNetV1_global2taspp_ffm2fam(args.num_classes)
         elif args.model == 'bisenetv1_global2taspp_ffm2fammul':
             model = BiSeNetV1_global2taspp_ffm2fammul(args.num_classes)
         else:
             raise KeyError("unknown model: {}".format(args.model))
-        losses = [OhemCrossEntropyLoss(), OhemCrossEntropyLoss(), OhemCrossEntropyLoss(), CannyLoss()]
+        losses = [OhemCrossEntropyLoss(), OhemCrossEntropyLoss(), OhemCrossEntropyLoss()]
         loss_weights = [1, 1, 1, 1]
     else:
         model = None
@@ -147,6 +142,7 @@ if __name__ == "__main__":
     iter_num = 0
     min_loss = 100
     best_miou = 0
+    canny_loss = torch.tensor([0])
 
     # train
     start_time = time.time()
@@ -161,13 +157,13 @@ if __name__ == "__main__":
             if not isinstance(outputs, tuple):
                 outputs = [outputs]
             train_confmat.update(label_batch.flatten(), outputs[0].argmax(1).flatten())
-            loss_list = [loss_weights[i] * losses[i](outputs[i], label_batch.long()) for i in range(len(outputs))]
+            loss_list = [loss_weights[i] * losses[i](outputs[i], label_batch.long()) for i in range(len(losses))]
             # print(loss_list)
             main_loss = loss_list[0]
             loss = main_loss.clone()
             for i in range(1, len(loss_list)):
                 loss += loss_list[i]
-            canny_loss = loss_list[-1]
+            #canny_loss = loss_list[-1]
             train_losses.update(main_loss.item(), image_batch.shape[0])
             optimizer.zero_grad()
             loss.backward()
@@ -211,7 +207,7 @@ if __name__ == "__main__":
 
                     val_confmat.update(label_batch.flatten(), outputs[0].argmax(1).flatten())
                     loss_list = [loss_weights[i] * losses[i](outputs[i], label_batch.long()) for i in
-                                 range(len(outputs))]
+                                 range(len(losses))]
                     main_loss = loss_list[0]
                     loss = main_loss
                     for i in range(1, len(loss_list)):

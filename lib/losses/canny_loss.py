@@ -3,15 +3,6 @@ import torch.nn as nn
 import cv2
 
 
-def pred_convert(pred):
-    img_list = []
-    for i in range(pred.shape[0]):
-        img = pred[i]
-        img = img.argmax(0)
-        img = img.unsqueeze(0)
-        img_list.append(img)
-    res = torch.cat(img_list, dim=0)
-    return res
 
 
 def canny(tensors):
@@ -27,15 +18,21 @@ def canny(tensors):
 
 
 class CannyLoss(nn.Module):
-    def __init__(self, reduction=False):
+    def __init__(self, output=False):
         super(CannyLoss, self).__init__()
-        if reduction:
-            self.loss = nn.CrossEntropyLoss(reduction="none")
-        else:
-            self.loss = nn.CrossEntropyLoss()
+        self.output = output
+        self.out_loss = nn.CrossEntropyLoss(reduction='none')
+        self.ce_loss = nn.CrossEntropyLoss()
+
 
     def forward(self, pred, labels):
-        pred = pred_convert(pred)
-        pred = canny(pred)
-        labels = canny(labels)
-        return self.loss(pred, labels)
+        # 8 512 512
+        edge_mask = canny(labels).to(torch.int64).to('cuda')
+        if self.output:
+            loss = self.out_loss(pred, labels.long())
+            edge_mask = edge_mask.detach()
+            out_loss = (loss * edge_mask).mean()
+            return out_loss
+        else:
+            loss = self.ce_loss(pred, edge_mask)
+            return loss
