@@ -337,7 +337,8 @@ class DualResNet(nn.Module):
 
 
 
-
+def ddrnet_39(num_classes):
+    return DualResNet(BasicBlock, [3, 4, 6, 3], num_classes=num_classes, planes=64, spp_planes=128, head_planes=256)
 
 def ddrnet_23(num_classes):
     return DualResNet(BasicBlock, [2, 2, 2, 2], num_classes=num_classes, planes=64, spp_planes=128, head_planes=128)

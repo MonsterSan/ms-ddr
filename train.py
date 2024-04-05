@@ -12,7 +12,7 @@ import math
 from lib.datasets.dataset_crack import CrackDataset
 from torch.utils.data import DataLoader
 
-from lib.models.ddrnet import ddrnet_silm, ddrnet_23
+from lib.models.ddrnet import ddrnet_silm, ddrnet_23, ddrnet_39
 from lib.models.bisenetv1 import BiSeNetV1
 from lib.models.bisenetv2 import BiSeNetV2
 from lib.models.bisenetv1_global2taspp import BiSeNetV1_global2taspp
@@ -25,14 +25,14 @@ from lib.losses.ohem_cross_entropy_loss import OhemCrossEntropyLoss
 from lib.losses.canny_loss import CannyLoss
 
 from lib.utils.loss_avg_meter import LossAverageMeter
-from lib.utils.confusion_matrix import ConfusionMatrix
+from lib.utils.confusion_matrix_old import ConfusionMatrix
 
 from utils.save_log import save_log
 from utils.save_weight import save_weights
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str,
-                    default='bisenetv1_global2taspp', help='model name')
+                    default='ddrnet_23', help='model name')
 # D:\\data\\Crack_Forest_paddle\\Crack_Forest_paddle
 # /home/user/data/lumianliefeng/Crack_Forest_paddle
 # /home/user/data/liefeng/Crack_paddle_255
@@ -43,7 +43,7 @@ parser.add_argument('--img_size', type=int,
 parser.add_argument('--num_classes', type=int,
                     default=2, help='output channel of network')
 parser.add_argument('--max_epochs', type=int,
-                    default=100, help='maximum epoch number to train')
+                    default=30, help='maximum epoch number to train')
 parser.add_argument('--batch_size', type=int,
                     default=8, help='batch_size per gpu')
 parser.add_argument('--base_lr', type=float,
@@ -51,7 +51,7 @@ parser.add_argument('--base_lr', type=float,
 parser.add_argument('--seed', type=int,
                     default=3407, help='random seed')
 parser.add_argument('--log_path', type=str,
-                    default='./run', help='run path')
+                    default='./run/crackforest', help='run path')
 parser.add_argument('--log_iters', type=int,
                     default=500, help='log interval')
 parser.add_argument('--eval', type=bool,

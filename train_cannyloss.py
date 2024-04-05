@@ -16,10 +16,6 @@ from lib.models.ddrnet import ddrnet_silm, ddrnet_23
 from lib.models.bisenetv1 import BiSeNetV1
 from lib.models.bisenetv2 import BiSeNetV2
 from lib.models.bisenetv1_global2taspp import BiSeNetV1_global2taspp
-#from lib.models.bisenetv1_global2taspp_ffm2fam import BiSeNetV1_global2taspp_ffm2fam
-
-from lib.models.bisenetv1_global2taspp_ffm2tri import BiSeNetV1_global2taspp_ffm2tri
-#from lib.models.bisenetv1_global2taspp_ffm2fam import BiSeNetV1_global2taspp_ffm2fam
 from lib.models.bisenetv1_global2taspp_ffm2fammul import BiSeNetV1_global2taspp_ffm2fammul
 
 from torch.optim.lr_scheduler import PolynomialLR
@@ -28,7 +24,7 @@ from lib.losses.ohem_cross_entropy_loss import OhemCrossEntropyLoss
 from lib.losses.canny_loss import CannyLoss
 
 from lib.utils.loss_avg_meter import LossAverageMeter
-from lib.utils.confusion_matrix import ConfusionMatrix
+from lib.utils.confusion_matrix_old import ConfusionMatrix
 
 from utils.save_log import save_log
 from utils.save_weight import save_weights
@@ -39,8 +35,9 @@ parser.add_argument('--model', type=str,
 # D:\\data\\Crack_Forest_paddle\\Crack_Forest_paddle
 # /home/user/data/lumianliefeng/Crack_Forest_paddle
 # /home/user/data/liefeng/Crack_paddle_255
+# /home/user/data/lumianliefeng/crack315_paddle
 parser.add_argument('--dataset_root', type=str,
-                    default='/home/user/data/lumianliefeng/Crack_Forest_paddle', help='dataset root directory')
+                    default='/home/user/data/lumianliefeng/Deepcrack_paddle', help='dataset root directory')
 parser.add_argument('--img_size', type=int,
                     default=512, help='input patch size of network input')
 parser.add_argument('--num_classes', type=int,
@@ -48,13 +45,13 @@ parser.add_argument('--num_classes', type=int,
 parser.add_argument('--max_epochs', type=int,
                     default=100, help='maximum epoch number to train')
 parser.add_argument('--batch_size', type=int,
-                    default=8, help='batch_size per gpu')
+                    default=32, help='batch_size per gpu')
 parser.add_argument('--base_lr', type=float,
                     default=0.01, help='segmentation network learning rate')
 parser.add_argument('--seed', type=int,
                     default=3407, help='random seed')
 parser.add_argument('--log_path', type=str,
-                    default='./run', help='run path')
+                    default='./run/deep20000', help='run path')
 parser.add_argument('--log_iters', type=int,
                     default=500, help='log interval')
 parser.add_argument('--eval', type=bool,
@@ -69,7 +66,7 @@ def worker_init_fn(worker_id):
 
 
 if __name__ == "__main__":
-    os.environ["CUDA_VISIBLE_DEVICES"] = "1"
+    os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
     # set seed
     random.seed(args.seed)
@@ -90,7 +87,7 @@ if __name__ == "__main__":
 
     # create model
     if args.model == 'ddrnet':
-        model = ddrnet_silm(args.num_classes)
+        model = ddrnet_silm(args.num_clpasses)
         losses = [OhemCrossEntropyLoss()]
         loss_weights = [1]
     elif args.model == 'ddrnet_23':

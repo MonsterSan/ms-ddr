@@ -201,7 +201,7 @@ class ContextPath(nn.Module):
         feat8, feat16, feat32 = self.resnet(x)
         feat32_aspp = self.aspp(feat32)
         feat32_arm = self.arm32(feat32_aspp)
-        feat32_up = self.up32(feat32_aspp)
+        feat32_up = self.up32(feat32_arm)
         feat32_up = self.conv_head32(feat32_up)
 
         feat16_conv = self.arm16(feat16)
@@ -321,7 +321,7 @@ class BiSeNetV1_global2taspp(nn.Module):
         self.cp = ContextPath()
         self.sp = SpatialPath()
         self.ffm = FeatureFusionModule(256, 256)
-        self.canny_out = BiSeNetOutput(128, 128, n_classes, up_factor=8)
+        #self.canny_out = BiSeNetOutput(128, 128, n_classes, up_factor=8)
         self.conv_out = BiSeNetOutput(256, 256, n_classes, up_factor=8)
         self.aux_mode = aux_mode
         if self.aux_mode == 'train':
@@ -333,7 +333,7 @@ class BiSeNetV1_global2taspp(nn.Module):
         H, W = x.size()[2:]
         feat_cp8, feat_cp16 = self.cp(x)
         feat_sp = self.sp(x)
-        canny_out = self.canny_out(feat_sp)
+        #canny_out = self.canny_out(feat_sp)
 
         feat_fuse = self.ffm(feat_sp, feat_cp8)
 
@@ -341,7 +341,7 @@ class BiSeNetV1_global2taspp(nn.Module):
         if self.aux_mode == 'train':
             feat_out16 = self.conv_out16(feat_cp8)
             feat_out32 = self.conv_out32(feat_cp16)
-            return feat_out, feat_out16, feat_out32, canny_out
+            return feat_out, feat_out16, feat_out32#, canny_out
         elif self.aux_mode == 'eval':
             return feat_out,
         elif self.aux_mode == 'pred':

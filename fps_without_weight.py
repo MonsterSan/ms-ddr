@@ -8,15 +8,14 @@ import os
 from lib.models.ddrnet import ddrnet_23, ddrnet_silm
 from lib.models.bisenetv1 import BiSeNetV1
 from lib.models.bisenetv2 import BiSeNetV2
-from lib.models.bisenetv1_global2taspp_ffm2fam import BiSeNetV1_global2taspp_ffm2fam
-from lib.models.bisenetv1_global2taspp_noarm_ffmnoatten import BiSeNetV1_global2taspp
-from lib.models.bisenetv1_global2taspp_ffm2tri import BiSeNetV1_global2taspp_ffm2tri
 from lib.models.bisenetv1_global2taspp import BiSeNetV1_global2taspp
+from lib.models.bisenetv1_global2taspp_ffm2fammul import BiSeNetV1_global2taspp_ffm2fammul
+
 
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str,
-                    default='bisenetv1_global2taspp_ffm2fam', help='model name')
+                    default='bisenetv1_global2taspp_ffm2fammul', help='model name')
 parser.add_argument('--img_size', type=tuple,
                     default=(512, 512), help='input patch size of network input')
 parser.add_argument('--channels', type=int,
@@ -27,7 +26,7 @@ args = parser.parse_args()
 
 if __name__ == '__main__':
 
-    os.environ["CUDA_VISIBLE_DEVICES"]= "0"
+    os.environ["CUDA_VISIBLE_DEVICES"]= "1"
 
     if args.model == 'ddrnet_silm':
         model = ddrnet_silm(args.num_classes)
@@ -35,14 +34,12 @@ if __name__ == '__main__':
         model = ddrnet_23(args.num_classes)
     elif args.model == 'bisenetv1':
         model = BiSeNetV1(args.num_classes)
-    elif args.model == 'bisenetv1_global2taspp_ffm2fam':
-        model = BiSeNetV1_global2taspp_ffm2fam(args.num_classes)
     elif args.model == 'bisenetv1_global2taspp_noarm_ffmnoatten':
         model = BiSeNetV1_global2taspp(args.num_classes)
-    elif args.model == 'bisenetv1_global2taspp_ffm2tri':
-        model = BiSeNetV1_global2taspp_ffm2tri(args.num_classes)
     elif args.model == 'bisenetv1_global2taspp':
         model = BiSeNetV1_global2taspp(args.num_classes)
+    elif args.model == 'bisenetv1_global2taspp_ffm2fammul':
+        model = BiSeNetV1_global2taspp_ffm2fammul(args.num_classes)
 
 
 

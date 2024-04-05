@@ -16,7 +16,7 @@ from torch.nn.modules.loss import CrossEntropyLoss
 from lib.losses.ohem_cross_entropy_loss import OhemCrossEntropyLoss
 
 from lib.utils.loss_avg_meter import LossAverageMeter
-from lib.utils.confusion_matrix import ConfusionMatrix
+from lib.utils.confusion_matrix_old import ConfusionMatrix
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str,

@@ -248,7 +248,7 @@ class BiSeNetV1_mul(nn.Module):
         self.cp = ContextPath()
         self.sp = SpatialPath()
         self.fam = AlignedModule()
-        self.canny_out = BiSeNetOutput(128, 128, n_classes, up_factor=8)
+        #self.canny_out = BiSeNetOutput(128, 128, n_classes, up_factor=8)
         self.conv_out = BiSeNetOutput(128, 128, n_classes, up_factor=8)
         self.aux_mode = aux_mode
         if self.aux_mode == 'train':
@@ -260,7 +260,7 @@ class BiSeNetV1_mul(nn.Module):
         H, W = x.size()[2:]
         feat_cp8, feat_cp16 = self.cp(x)
         feat_sp = self.sp(x)
-        canny_out = self.canny_out(feat_sp)
+        #canny_out = self.canny_out(feat_sp)
 
         feat_cp8, feat_sp = self.fam(feat_cp8, feat_sp)
         feat_fuse = feat_sp + feat_cp8
@@ -269,7 +269,7 @@ class BiSeNetV1_mul(nn.Module):
         if self.aux_mode == 'train':
             feat_out16 = self.conv_out16(feat_cp8)
             feat_out32 = self.conv_out32(feat_cp16)
-            return feat_out, feat_out16, feat_out32, canny_out
+            return feat_out, feat_out16, feat_out32#, canny_out
         elif self.aux_mode == 'eval':
             return feat_out,
         elif self.aux_mode == 'pred':

@@ -29,21 +29,6 @@ class ConfusionMatrix(object):
         # 计算每个类别预测与真实目标的iou
         iu = torch.diag(h) / (h.sum(1) + h.sum(0) - torch.diag(h))
 
-        # 计算每个类别的精确率、召回率和 F1 分数
-        class_recall = h.diag() / h.sum(1)
-        class_precision = h.diag() / h.sum(0)
-
-        # 避免除以零
-        class_recall[class_recall != class_recall] = 0.0
-        class_precision[class_precision != class_precision] = 0.0
-
-        # 计算每个类别的 F1 分数
-        class_f1 = 2 * (class_precision * class_recall) / (class_precision + class_recall)
-        class_f1[class_f1 != class_f1] = 0.0  # 处理 NaN
-
-        # 计算 MF1
-        mf1 = class_f1.mean()
-
         Rec = h[1][1] / (h[1][1] + h[1][0]) if (h[1][1] + h[1][0]) != 0 else 0.
         Pre = h[1][1] / (h[1][1] + h[0][1]) if (h[1][1] + h[0][1]) != 0 else 0.
         if (Rec + Pre) != 0:
@@ -51,7 +36,7 @@ class ConfusionMatrix(object):
         else:
             F1 = 0
 
-        return acc_global, acc, iu, Rec, Pre, F1, mf1
+        return acc_global, acc, iu, Rec, Pre, F1
 
     def reduce_from_all_processes(self):
         if not torch.distributed.is_available():
@@ -62,7 +47,7 @@ class ConfusionMatrix(object):
         torch.distributed.all_reduce(self.mat)
 
     def __str__(self):
-        acc_global, acc, iu, Rec, Pre, F1, mf1 = self.compute()
+        acc_global, acc, iu, Rec, Pre, F1 = self.compute()
         return (
             'global correct: {:.1f}\n'
             'average row correct: {}\n'
@@ -70,14 +55,12 @@ class ConfusionMatrix(object):
             'mean IoU: {:.1f}\n'
             'F1: {}\n'
             'Rec: {}\n'
-            'Pre: {}\n'
-            'MF1: {}').format(
+            'Pre: {}').format(
             acc_global.item() * 100,
             ['{:.1f}'.format(i) for i in (acc * 100).tolist()],
             ['{:.1f}'.format(i) for i in (iu * 100).tolist()],
             iu.mean().item() * 100,
             F1.item() * 100,
             Rec.item() * 100,
-            Pre.item() * 100,
-            mf1.item() * 100
+            Pre.item() * 100
         )
